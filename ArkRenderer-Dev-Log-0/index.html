@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>ArkRenderer Dev Log 0 | Proton&#39;s Blog</title>
+  <meta name="description" content="Window SystemLot’s of OpenGL tutorials start with teaching people to create a black window. To create windows, we need GLFW, which provides a simple API for creating windows, contexts and surfaces, re">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArkRenderer Dev Log 0">
+<meta property="og:url" content="https://proton991.github.com/ArkRenderer-Dev-Log-0/index.html">
+<meta property="og:site_name" content="Cxy&#39;s Blog">
+<meta property="og:description" content="Window SystemLot’s of OpenGL tutorials start with teaching people to create a black window. To create windows, we need GLFW, which provides a simple API for creating windows, contexts and surfaces, re">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://proton991.github.com/ArkRenderer-Dev-Log-0/ark-001.png">
+<meta property="article:published_time" content="2022-06-17T09:32:03.000Z">
+<meta property="article:modified_time" content="2022-06-17T12:30:58.301Z">
+<meta property="article:author" content="Cui Xinyu">
+<meta property="article:tag" content="Renderer">
+<meta property="article:tag" content="OpenGL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://proton991.github.com/ArkRenderer-Dev-Log-0/ark-001.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://proton991.github.com/ArkRenderer-Dev-Log-0/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Cxy&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <link href="//cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" rel="stylesheet">
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="main-center theme-black# 主题颜色 theme-black theme-blue theme-green theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/proton991" target="_blank">
+          <img class="img-circle img-rotate" src="/images/minions.jpeg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Cui Xinyu</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Farmer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shanghai, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/proton991" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>Welcome!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Cpp/">Cpp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Talk/">Talk</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer-graphics/">computer graphics</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/" rel="tag">OpenGL</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Renderer/" rel="tag">Renderer</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c-STL/" rel="tag">c++ STL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer-graphics/" rel="tag">computer-graphics</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ray-tracing/" rel="tag">ray-tracing</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/OpenGL/" style="font-size: 14px;">OpenGL</a> <a href="/tags/Renderer/" style="font-size: 14px;">Renderer</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/c/" style="font-size: 13px;">c++</a> <a href="/tags/c-STL/" style="font-size: 13px;">c++ STL</a> <a href="/tags/computer-graphics/" style="font-size: 13px;">computer-graphics</a> <a href="/tags/ray-tracing/" style="font-size: 13px;">ray-tracing</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/ArkRenderer-Dev-Log-0/" class="title">ArkRenderer Dev Log 0</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-06-17T09:32:03.000Z" itemprop="datePublished">2022-06-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/ArkRenderer-Project/" class="title">ArkRenderer Project</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-06-17T05:51:32.000Z" itemprop="datePublished">2022-06-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Talk/">Talk</a>
+              </p>
+              <p class="item-title">
+                <a href="/hello-world/" class="title">Hello World</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-06-17T03:00:36.044Z" itemprop="datePublished">2022-06-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Cpp/">Cpp</a>
+              </p>
+              <p class="item-title">
+                <a href="/LearnCpp-day0/" class="title">LearnCpp-day0</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-15T05:18:53.000Z" itemprop="datePublished">2022-03-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/RayTraycing-day0/" class="title">RayTraycing-day0</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-14T12:27:21.000Z" itemprop="datePublished">2022-03-14</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">Catalogue</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Window-System"><span class="toc-number">1.</span> <span class="toc-text">Window System</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-ArkRenderer-Dev-Log-0" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ArkRenderer Dev Log 0
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/ArkRenderer-Dev-Log-0/" class="article-date">
+	  <time datetime="2022-06-17T09:32:03.000Z" itemprop="datePublished">2022-06-17</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/computer-graphics/">computer graphics</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/OpenGL/" rel="tag">OpenGL</a>, <a class="article-tag-link-link" href="/tags/Renderer/" rel="tag">Renderer</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/ArkRenderer-Dev-Log-0/#comments" class="article-comment-link">Comments</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="Window-System"><a href="#Window-System" class="headerlink" title="Window System"></a>Window System</h2><p>Lot’s of OpenGL tutorials start with teaching people to create a black window. To create windows, we need <a href="glfw.org">GLFW</a>, which provides a simple API for creating windows, contexts and surfaces, receiving input and events. Integrating 3rd party libraries in Visual Studio can be done in many ways, I prefer this way:</p>
+<ol>
+<li>building lib file from source code</li>
+<li>set include and library directories </li>
+<li>link libs.</li>
+</ol>
+<p>Step 2 &amp; 3 are done by setting properties of the project.</p>
+<p>A windows has many properties that can be configured, such as position, size, but as a starting point, we will not make it that complex. (I will improve it by reading configuration file and set these value). So a basic Window System should be something like this:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">GLFWwindow</span>;</span>	<span class="comment">// use forward declaration</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WindowSystem</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">WindowSystem</span>() <span class="keyword">noexcept</span> = <span class="keyword">default</span>;</span><br><span class="line">	<span class="built_in">WindowSystem</span>(WindowSystem&amp;&amp;) = <span class="keyword">default</span>;</span><br><span class="line">	WindowSystem&amp; <span class="keyword">operator</span>=(WindowSystem&amp;&amp;) = <span class="keyword">default</span>;</span><br><span class="line">	~<span class="built_in">WindowSystem</span>()</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">Shutdown</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Disable Copying</span></span><br><span class="line">	<span class="built_in">WindowSystem</span>(<span class="keyword">const</span> WindowSystem&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">	WindowSystem&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> WindowSystem&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">	<span class="function">GLFWwindow* <span class="title">Init</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">SwapBuffers</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">	[[nodiscard]] <span class="function"><span class="keyword">bool</span> <span class="title">IsCursorVisible</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> m_showCursor;</span><br><span class="line">	&#125;</span><br><span class="line">	[[nodiscard]] <span class="function"><span class="keyword">bool</span> <span class="title">ShouldClose</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> m_shouldClose;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Shutdown</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	GLFWwindow* m_window&#123; <span class="literal">nullptr</span> &#125;;</span><br><span class="line">	<span class="keyword">bool</span> m_showCursor&#123; <span class="literal">false</span> &#125;;</span><br><span class="line">	<span class="keyword">bool</span> m_shouldClose&#123; <span class="literal">false</span> &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Let’s take a look at the <code>Init()</code> function:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">GLFWwindow* <span class="title">WindowSystem::Init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> width = <span class="number">1024</span>;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> height = <span class="number">768</span>;</span><br><span class="line">	<span class="keyword">if</span> (!<span class="built_in">glfwInit</span>())</span><br><span class="line">	&#123;</span><br><span class="line">		std::cerr &lt;&lt; <span class="string">&quot;Failed to start GLFW\n&quot;</span>;</span><br><span class="line">		<span class="built_in">glfwTerminate</span>();</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">glfwWindowHint</span>(GLFW_CONTEXT_VERSION_MAJOR, <span class="number">4</span>);</span><br><span class="line">	<span class="built_in">glfwWindowHint</span>(GLFW_CONTEXT_VERSION_MINOR, <span class="number">6</span>);</span><br><span class="line">	<span class="built_in">glfwWindowHint</span>(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);</span><br><span class="line">	<span class="built_in">glfwWindowHint</span>(GLFW_SAMPLES, <span class="number">4</span>); <span class="comment">// Enable 4xMSAA</span></span><br><span class="line">	<span class="built_in">glfwWindowHint</span>(GLFW_RESIZABLE, GL_FALSE);</span><br><span class="line">	m_window = <span class="built_in">glfwCreateWindow</span>(<span class="number">1024</span>, <span class="number">768</span>, <span class="string">&quot;ArkRenderer&quot;</span>, <span class="literal">nullptr</span>, <span class="literal">nullptr</span>);</span><br><span class="line">	<span class="keyword">if</span> (!m_window)</span><br><span class="line">	&#123;</span><br><span class="line">		std::cerr &lt;&lt; <span class="string">&quot;Failed to create GLFW m_window.\n&quot;</span>;</span><br><span class="line">		<span class="built_in">glfwTerminate</span>();</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">glfwMakeContextCurrent</span>(m_window);</span><br><span class="line">	<span class="built_in">glfwFocusWindow</span>(m_window);</span><br><span class="line">	<span class="built_in">glfwSwapInterval</span>(<span class="number">1</span>);	<span class="comment">//Enable Vsync</span></span><br><span class="line">	<span class="comment">// Center window</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">auto</span> mode = <span class="built_in">glfwGetVideoMode</span>(<span class="built_in">glfwGetPrimaryMonitor</span>());</span><br><span class="line">	<span class="built_in">glfwSetWindowPos</span>(m_window, (mode-&gt;width / <span class="number">2</span>) - width / <span class="number">2</span>, (mode-&gt;height / <span class="number">2</span>) - height / <span class="number">2</span>);</span><br><span class="line">	<span class="built_in">glfwSetInputMode</span>(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);</span><br><span class="line">	<span class="keyword">return</span> m_window;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>I used ‘magic numbers’, which should be avoided. But no worry about that, I will improve this later.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">WindowSystem::SwapBuffers</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">glfwSwapBuffers</span>(m_window);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">WindowSystem::Update</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">glfwPollEvents</span>();</span><br><span class="line">	<span class="keyword">if</span> (Input::<span class="built_in">GetInstance</span>().<span class="built_in">IsKeyPressed</span>(GLFW_KEY_TAB))</span><br><span class="line">	&#123;</span><br><span class="line">		m_showCursor = !m_showCursor;</span><br><span class="line">		<span class="keyword">if</span> (m_showCursor)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">glfwSetInputMode</span>(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">glfwSetInputMode</span>(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Check if the m_window needs to be closed</span></span><br><span class="line">	<span class="keyword">if</span> (Input::<span class="built_in">GetInstance</span>().<span class="built_in">IsKeyPressed</span>(GLFW_KEY_ESCAPE) ||</span><br><span class="line">		<span class="built_in">glfwWindowShouldClose</span>(m_window))</span><br><span class="line">	&#123;</span><br><span class="line">		m_shouldClose = <span class="literal">true</span>;</span><br><span class="line">		<span class="built_in">glfwSetWindowShouldClose</span>(m_window, <span class="literal">true</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>SwapBuffers</code> is simple. What is <code>glfwPollEvents</code>?</p>
+<p>The <code>glfwPollEvents</code> function <strong>checks if any events are triggered (like keyboard input or mouse movement events)</strong><code>Update</code> function updates window status according to keyboard input(<code>Input.h</code>).</p>
+<p>In <code>AkrEngine.cpp</code>, we use a function called <code>ConnectToInput</code> to handle input related with current window:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ConnectToInput</span><span class="params">(GLFWwindow* window)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">auto</span> resizeCallback = [](GLFWwindow* w, <span class="keyword">auto</span> width, <span class="keyword">auto</span> height) &#123;</span><br><span class="line">		Input::<span class="built_in">GetInstance</span>().<span class="built_in">windowResized</span>(width, height);</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="built_in">glfwSetWindowSizeCallback</span>(window, resizeCallback);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">auto</span> keyCallback = [](GLFWwindow* w, <span class="keyword">auto</span> key, <span class="keyword">auto</span> scanCode, <span class="keyword">auto</span> action, <span class="keyword">auto</span> mode) &#123;</span><br><span class="line">		Input::<span class="built_in">GetInstance</span>().<span class="built_in">keyPressed</span>(key, scanCode, action, mode);</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="built_in">glfwSetKeyCallback</span>(window, keyCallback);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">auto</span> cursorPosCallback = [](GLFWwindow* w, <span class="keyword">auto</span> xPos, <span class="keyword">auto</span> yPos) &#123;</span><br><span class="line">		Input::<span class="built_in">GetInstance</span>().<span class="built_in">mouseMoved</span>(xPos, yPos);</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="built_in">glfwSetCursorPosCallback</span>(window, cursorPosCallback);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>And use our simple Window System like this:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ArkEngine::Execute</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (!m_window.<span class="built_in">ShouldClose</span>())</span><br><span class="line">	&#123;</span><br><span class="line">		Input::<span class="built_in">GetInstance</span>().<span class="built_in">Update</span>();</span><br><span class="line">		m_window.<span class="built_in">Update</span>();</span><br><span class="line">		m_renderer.<span class="built_in">Render</span>();</span><br><span class="line">		m_window.<span class="built_in">SwapBuffers</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">Shutdown</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ArkEngine::Shutdown</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	m_window.<span class="built_in">Shutdown</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Finally, we got this:</p>
+<p><img src="/ArkRenderer-Dev-Log-0/ark-001.png" alt="ark-001"></p>
+<p>That’s all for today!</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>Link：</strong>
+      <a href="https://proton991.github.com/ArkRenderer-Dev-Log-0/" title="ArkRenderer Dev Log 0" target="_blank" rel="external">https://proton991.github.com/ArkRenderer-Dev-Log-0/</a>
+    </li>
+    
+<!--     <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li> -->
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/proton991" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/minions.jpeg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/proton991" target="_blank"><span class="text-dark">Cui Xinyu</span><small class="ml-1x">Farmer</small></a></h3>
+        <div>He is lazy...</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/ArkRenderer-Project/" title="ArkRenderer Project"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="Catalogue" role="button">
+        <span>[&nbsp;</span><span>Catalogue</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/proton991" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>

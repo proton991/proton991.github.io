@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Cxy&#39;s Blog</title>
+  
+  
+  <link href="https://proton991.github.com/atom.xml" rel="self"/>
+  
+  <link href="https://proton991.github.com/"/>
+  <updated>2022-06-17T12:30:58.301Z</updated>
+  <id>https://proton991.github.com/</id>
+  
+  <author>
+    <name>Cui Xinyu</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ArkRenderer Dev Log 0</title>
+    <link href="https://proton991.github.com/ArkRenderer-Dev-Log-0/"/>
+    <id>https://proton991.github.com/ArkRenderer-Dev-Log-0/</id>
+    <published>2022-06-17T09:32:03.000Z</published>
+    <updated>2022-06-17T12:30:58.301Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Window-System"><a href="#Window-System" class="headerlink" title="Window System"></a>Window System</h2><p>Lot’s of OpenGL tutorials start with teaching people to create a black window. To create windows, we need <a href="glfw.org">GLFW</a>, which provides a simple API for creating windows, contexts and surfaces, receiving input and events. Integrating 3rd party libraries in Visual Studio can be done in many ways, I prefer this way:</p><ol><li>building lib file from source code</li><li>set include and library directories </li><li>link libs.</li></ol><p>Step 2 &amp; 3 are done by setting properties of the project.</p><p>A windows has many properties that can be configured, such as position, size, but as a starting point, we will not make it that complex. (I will improve it by reading configuration file and set these value). So a basic Window System should be something like this:</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">GLFWwindow</span>;</span><span class="comment">// use forward declaration</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WindowSystem</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"><span class="built_in">WindowSystem</span>() <span class="keyword">noexcept</span> = <span class="keyword">default</span>;</span><br><span class="line"><span class="built_in">WindowSystem</span>(WindowSystem&amp;&amp;) = <span class="keyword">default</span>;</span><br><span class="line">WindowSystem&amp; <span class="keyword">operator</span>=(WindowSystem&amp;&amp;) = <span class="keyword">default</span>;</span><br><span class="line">~<span class="built_in">WindowSystem</span>()</span><br><span class="line">&#123;</span><br><span class="line"><span class="built_in">Shutdown</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Disable Copying</span></span><br><span class="line"><span class="built_in">WindowSystem</span>(<span class="keyword">const</span> WindowSystem&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">WindowSystem&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> WindowSystem&amp;) = <span class="keyword">delete</span>;</span><br><span class="line"><span class="function">GLFWwindow* <span class="title">Init</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SwapBuffers</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">[[nodiscard]] <span class="function"><span class="keyword">bool</span> <span class="title">IsCursorVisible</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">return</span> m_showCursor;</span><br><span class="line">&#125;</span><br><span class="line">[[nodiscard]] <span class="function"><span class="keyword">bool</span> <span class="title">ShouldClose</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">return</span> m_shouldClose;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Shutdown</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">GLFWwindow* m_window&#123; <span class="literal">nullptr</span> &#125;;</span><br><span class="line"><span class="keyword">bool</span> m_showCursor&#123; <span class="literal">false</span> &#125;;</span><br><span class="line"><span class="keyword">bool</span> m_shouldClose&#123; <span class="literal">false</span> &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p>Let’s take a look at the <code>Init()</code> function:</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">GLFWwindow* <span class="title">WindowSystem::Init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> width = <span class="number">1024</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> height = <span class="number">768</span>;</span><br><span class="line"><span class="keyword">if</span> (!<span class="built_in">glfwInit</span>())</span><br><span class="line">&#123;</span><br><span class="line">std::cerr &lt;&lt; <span class="string">&quot;Failed to start GLFW\n&quot;</span>;</span><br><span class="line"><span class="built_in">glfwTerminate</span>();</span><br><span class="line"><span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">glfwWindowHint</span>(GLFW_CONTEXT_VERSION_MAJOR, <span class="number">4</span>);</span><br><span class="line"><span class="built_in">glfwWindowHint</span>(GLFW_CONTEXT_VERSION_MINOR, <span class="number">6</span>);</span><br><span class="line"><span class="built_in">glfwWindowHint</span>(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);</span><br><span class="line"><span class="built_in">glfwWindowHint</span>(GLFW_SAMPLES, <span class="number">4</span>); <span class="comment">// Enable 4xMSAA</span></span><br><span class="line"><span class="built_in">glfwWindowHint</span>(GLFW_RESIZABLE, GL_FALSE);</span><br><span class="line">m_window = <span class="built_in">glfwCreateWindow</span>(<span class="number">1024</span>, <span class="number">768</span>, <span class="string">&quot;ArkRenderer&quot;</span>, <span class="literal">nullptr</span>, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="keyword">if</span> (!m_window)</span><br><span class="line">&#123;</span><br><span class="line">std::cerr &lt;&lt; <span class="string">&quot;Failed to create GLFW m_window.\n&quot;</span>;</span><br><span class="line"><span class="built_in">glfwTerminate</span>();</span><br><span class="line"><span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">glfwMakeContextCurrent</span>(m_window);</span><br><span class="line"><span class="built_in">glfwFocusWindow</span>(m_window);</span><br><span class="line"><span class="built_in">glfwSwapInterval</span>(<span class="number">1</span>);<span class="comment">//Enable Vsync</span></span><br><span class="line"><span class="comment">// Center window</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">auto</span> mode = <span class="built_in">glfwGetVideoMode</span>(<span class="built_in">glfwGetPrimaryMonitor</span>());</span><br><span class="line"><span class="built_in">glfwSetWindowPos</span>(m_window, (mode-&gt;width / <span class="number">2</span>) - width / <span class="number">2</span>, (mode-&gt;height / <span class="number">2</span>) - height / <span class="number">2</span>);</span><br><span class="line"><span class="built_in">glfwSetInputMode</span>(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);</span><br><span class="line"><span class="keyword">return</span> m_window;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>I used ‘magic numbers’, which should be avoided. But no worry about that, I will improve this later.</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">WindowSystem::SwapBuffers</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="built_in">glfwSwapBuffers</span>(m_window);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">WindowSystem::Update</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="built_in">glfwPollEvents</span>();</span><br><span class="line"><span class="keyword">if</span> (Input::<span class="built_in">GetInstance</span>().<span class="built_in">IsKeyPressed</span>(GLFW_KEY_TAB))</span><br><span class="line">&#123;</span><br><span class="line">m_showCursor = !m_showCursor;</span><br><span class="line"><span class="keyword">if</span> (m_showCursor)</span><br><span class="line">&#123;</span><br><span class="line"><span class="built_in">glfwSetInputMode</span>(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="built_in">glfwSetInputMode</span>(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Check if the m_window needs to be closed</span></span><br><span class="line"><span class="keyword">if</span> (Input::<span class="built_in">GetInstance</span>().<span class="built_in">IsKeyPressed</span>(GLFW_KEY_ESCAPE) ||</span><br><span class="line"><span class="built_in">glfwWindowShouldClose</span>(m_window))</span><br><span class="line">&#123;</span><br><span class="line">m_shouldClose = <span class="literal">true</span>;</span><br><span class="line"><span class="built_in">glfwSetWindowShouldClose</span>(m_window, <span class="literal">true</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><code>SwapBuffers</code> is simple. What is <code>glfwPollEvents</code>?</p><p>The <code>glfwPollEvents</code> function <strong>checks if any events are triggered (like keyboard input or mouse movement events)</strong><code>Update</code> function updates window status according to keyboard input(<code>Input.h</code>).</p><p>In <code>AkrEngine.cpp</code>, we use a function called <code>ConnectToInput</code> to handle input related with current window:</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ConnectToInput</span><span class="params">(GLFWwindow* window)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">auto</span> resizeCallback = [](GLFWwindow* w, <span class="keyword">auto</span> width, <span class="keyword">auto</span> height) &#123;</span><br><span class="line">Input::<span class="built_in">GetInstance</span>().<span class="built_in">windowResized</span>(width, height);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">glfwSetWindowSizeCallback</span>(window, resizeCallback);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">auto</span> keyCallback = [](GLFWwindow* w, <span class="keyword">auto</span> key, <span class="keyword">auto</span> scanCode, <span class="keyword">auto</span> action, <span class="keyword">auto</span> mode) &#123;</span><br><span class="line">Input::<span class="built_in">GetInstance</span>().<span class="built_in">keyPressed</span>(key, scanCode, action, mode);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">glfwSetKeyCallback</span>(window, keyCallback);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">auto</span> cursorPosCallback = [](GLFWwindow* w, <span class="keyword">auto</span> xPos, <span class="keyword">auto</span> yPos) &#123;</span><br><span class="line">Input::<span class="built_in">GetInstance</span>().<span class="built_in">mouseMoved</span>(xPos, yPos);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">glfwSetCursorPosCallback</span>(window, cursorPosCallback);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>And use our simple Window System like this:</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ArkEngine::Execute</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">while</span> (!m_window.<span class="built_in">ShouldClose</span>())</span><br><span class="line">&#123;</span><br><span class="line">Input::<span class="built_in">GetInstance</span>().<span class="built_in">Update</span>();</span><br><span class="line">m_window.<span class="built_in">Update</span>();</span><br><span class="line">m_renderer.<span class="built_in">Render</span>();</span><br><span class="line">m_window.<span class="built_in">SwapBuffers</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Shutdown</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ArkEngine::Shutdown</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">m_window.<span class="built_in">Shutdown</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>Finally, we got this:</p><p><img src="/ArkRenderer-Dev-Log-0/ark-001.png" alt="ark-001"></p><p>That’s all for today!</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;Window-System&quot;&gt;&lt;a href=&quot;#Window-System&quot; class=&quot;headerlink&quot; title=&quot;Window System&quot;&gt;&lt;/a&gt;Window System&lt;/h2&gt;&lt;p&gt;Lot’s of OpenGL tutorials </summary>
+      
+    
+    
+    
+    <category term="computer graphics" scheme="https://proton991.github.com/categories/computer-graphics/"/>
+    
+    
+    <category term="Renderer" scheme="https://proton991.github.com/tags/Renderer/"/>
+    
+    <category term="OpenGL" scheme="https://proton991.github.com/tags/OpenGL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ArkRenderer Project</title>
+    <link href="https://proton991.github.com/ArkRenderer-Project/"/>
+    <id>https://proton991.github.com/ArkRenderer-Project/</id>
+    <published>2022-06-17T05:51:32.000Z</published>
+    <updated>2022-06-17T09:18:05.251Z</updated>
+    
+    <content type="html"><![CDATA[<p><em>This article will be updated during the development</em></p><h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>Ark Renderer is a 3D rendering engine, I built this by referencing <strong><a href="https://github.com/htmlboss/OpenGL-Renderer">OpenGL-Renderer</a></strong>, it’s my first computer graphic project, so it’s difficult for me to start from scratch on my own. So I intend to build my project based on other projects, the final code may look similar, but I will dive deep into the code and figure out how it works. I will write dev logs along the way. OpengGL programming and basic rendering techniques will be covered.  </p><h2 id="Project-Structure"><a href="#Project-Structure" class="headerlink" title="Project Structure"></a>Project Structure</h2><p>The 3d engine is composed of several sub-systems. They are</p><ul><li>Window System</li><li>Render System</li><li>GUI System</li></ul><p>The render system is the core of the renderer.  I will create “wrappers” for raw OpenGL code and pipeline. Shaders, textures, scenes and other resources will be loaded from disk and cached in memory during runtime, so a <strong>ResourceManager</strong> is needed.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;em&gt;This article will be updated during the development&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&quot;Overview&quot;&gt;&lt;a href=&quot;#Overview&quot; class=&quot;headerlink&quot; title=&quot;Overview</summary>
+      
+    
+    
+    
+    <category term="computer graphics" scheme="https://proton991.github.com/categories/computer-graphics/"/>
+    
+    
+    <category term="Renderer" scheme="https://proton991.github.com/tags/Renderer/"/>
+    
+    <category term="OpenGL" scheme="https://proton991.github.com/tags/OpenGL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://proton991.github.com/hello-world/"/>
+    <id>https://proton991.github.com/hello-world/</id>
+    <published>2022-06-17T03:00:36.044Z</published>
+    <updated>2022-06-17T03:00:36.044Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="My-first-hexo-blog"><a href="#My-first-hexo-blog" class="headerlink" title="My first hexo blog."></a>My first hexo blog.</h1><p>Keep doing and do it well.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;My-first-hexo-blog&quot;&gt;&lt;a href=&quot;#My-first-hexo-blog&quot; class=&quot;headerlink&quot; title=&quot;My first hexo blog.&quot;&gt;&lt;/a&gt;My first hexo blog.&lt;/h1&gt;&lt;p&gt;Keep</summary>
+      
+    
+    
+    
+    <category term="Talk" scheme="https://proton991.github.com/categories/Talk/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>LearnCpp-day0</title>
+    <link href="https://proton991.github.com/LearnCpp-day0/"/>
+    <id>https://proton991.github.com/LearnCpp-day0/</id>
+    <published>2022-03-15T05:18:53.000Z</published>
+    <updated>2022-06-17T03:00:36.044Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Learn-CPP-Overview"><a href="#Learn-CPP-Overview" class="headerlink" title="Learn CPP - Overview"></a>Learn CPP - Overview</h2><p>C++ syntax is so complicated that I can’t grasp all of them, so I decided to learn c++ by coding some projects (apart form CG proects).</p><p><strong>Resources</strong>:</p><ol><li><a href="https://github.com/Alinshans/MyTinySTL">MyTinySTL</a></li><li><a href="https://github.com/huihut/interview">Cpp Interview</a></li><li><a href="https://github.com/TheAlgorithms/C-Plus-Plus">TheAlgorithms&#x2F;C-Plus-Plus</a></li><li><a href="https://github.com/wisdompeak/LeetCode">LeetCode C++</a></li></ol><p><strong>Learning Schedule</strong></p><ol><li>Build my own version of STL.</li><li>Build algorithm libarary using c++.</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;Learn-CPP-Overview&quot;&gt;&lt;a href=&quot;#Learn-CPP-Overview&quot; class=&quot;headerlink&quot; title=&quot;Learn CPP - Overview&quot;&gt;&lt;/a&gt;Learn CPP - Overview&lt;/h2&gt;&lt;p&gt;C+</summary>
+      
+    
+    
+    
+    <category term="Cpp" scheme="https://proton991.github.com/categories/Cpp/"/>
+    
+    
+    <category term="c++" scheme="https://proton991.github.com/tags/c/"/>
+    
+    <category term="algorithm" scheme="https://proton991.github.com/tags/algorithm/"/>
+    
+    <category term="c++ STL" scheme="https://proton991.github.com/tags/c-STL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>RayTraycing-day0</title>
+    <link href="https://proton991.github.com/RayTraycing-day0/"/>
+    <id>https://proton991.github.com/RayTraycing-day0/</id>
+    <published>2022-03-14T12:27:21.000Z</published>
+    <updated>2022-06-17T03:00:36.044Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Overview-Learn-Raytracing-from-theory-to-practice"><a href="#Overview-Learn-Raytracing-from-theory-to-practice" class="headerlink" title="Overview: Learn Raytracing - from theory to practice"></a>Overview: Learn Raytracing - from theory to practice</h2><p>Ray tracing is <strong>a method of graphics rendering that simulates the physical behavior of light</strong>. We can produce photorealistic images using ray tracing algorithms. I decided to learn the whole process of rendering from scratch and finally build my own raytracer. </p> <br /><p><strong>Resources</strong>:</p><ol><li><p><a href="https://www.scratchapixel.com/index.php">Scratchapixel</a></p></li><li><p><a href="https://graphicscodex.courses.nvidia.com/app.html">Graphics Codex</a></p></li><li><p><a href="https://www.youtube.com/playlist?list=PLujxSBD-JXgnGmsn7gEyN28P1DnRZG7qi">TU Wien Rendering Course</a></p></li><li><p>Fundamentals of Computer Graphics, Fourth Edition (2016)</p></li><li><p>Physically Based Rendering From Theory to Implementation  (2016)</p></li></ol> <br /><p><strong>Projects</strong>:</p><ol><li><p><a href="https://raytracing.github.io/">Ray Tracing in One Weekend</a></p></li><li><p><a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/smallpaint/">Smallpaint</a></p></li><li><p><a href="https://github.com/knightcrawler25/GLSL-PathTracer">GLSL-PathTracer</a></p></li><li><p><a href="https://github.com/define-private-public/PSRayTracing">PSRayTracing</a></p></li><li><p><a href="https://github.com/linusmossberg/monte-carlo-ray-tracer">monte-carlo-ray-tracer</a></p></li><li><p><a href="https://nvpro-samples.github.io/vk_mini_path_tracer/index.html">vk_mini_path_tracer</a></p></li></ol> <br /><p><strong>Learning Schedule</strong>:</p><p><strong>LO0</strong>: Basics concepts, algorithms in computer graphics&#x2F;rendering.</p><p><strong>LO1</strong>: Follow Ray Tracing in One Weekend Series and code with it.</p><p><strong>LO2</strong>: Refactor the code in <strong>LO1</strong> (referencing PSRayTracing and Smallpaint), build a retracer with GUI in which you can select scene and configure paramenters for raytracer.</p><p><strong>LO3</strong>: Learn OpenGL and Read the source code of GLSL-PathTracer thoroughly.</p><p><strong>LO4</strong>: Learn Vulkan and follow the tutorial vk_mini_path_tracer and finally build a Vulkan-pathtracer.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;Overview-Learn-Raytracing-from-theory-to-practice&quot;&gt;&lt;a href=&quot;#Overview-Learn-Raytracing-from-theory-to-practice&quot; class=&quot;headerlink&quot; t</summary>
+      
+    
+    
+    
+    <category term="computer graphics" scheme="https://proton991.github.com/categories/computer-graphics/"/>
+    
+    
+    <category term="ray-tracing" scheme="https://proton991.github.com/tags/ray-tracing/"/>
+    
+    <category term="computer-graphics" scheme="https://proton991.github.com/tags/computer-graphics/"/>
+    
+  </entry>
+  
+</feed>
