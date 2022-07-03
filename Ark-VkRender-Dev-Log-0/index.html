@@ -17,20 +17,22 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>Hello World | Proton&#39;s Blog</title>
-  <meta name="description" content="My first hexo blog.Keep doing and do it well.">
+  <title>Ark VkRender Dev Log 0 | Proton&#39;s Blog</title>
+  <meta name="description" content="VkRenderer from scratchThis renderer is based on a tutorial on youtube (which itself is based on https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;). My plan is to finish this in 1 month. Vulkan is a new API that I never u">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://proton991.github.io/hello-world/index.html">
+<meta property="og:title" content="Ark VkRender Dev Log 0">
+<meta property="og:url" content="https://proton991.github.io/Ark-VkRender-Dev-Log-0/index.html">
 <meta property="og:site_name" content="Cxy&#39;s Blog">
-<meta property="og:description" content="My first hexo blog.Keep doing and do it well.">
+<meta property="og:description" content="VkRenderer from scratchThis renderer is based on a tutorial on youtube (which itself is based on https:&#x2F;&#x2F;vulkan-tutorial.com&#x2F;). My plan is to finish this in 1 month. Vulkan is a new API that I never u">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-06-17T03:00:36.044Z">
-<meta property="article:modified_time" content="2022-06-17T03:00:36.044Z">
+<meta property="article:published_time" content="2022-07-03T09:21:10.000Z">
+<meta property="article:modified_time" content="2022-07-03T11:35:47.328Z">
 <meta property="article:author" content="Cui Xinyu">
+<meta property="article:tag" content="Renderer">
+<meta property="article:tag" content="Vulkan">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="https://proton991.github.io/hello-world/index.html">
+  <link rel="canonical" href="https://proton991.github.io/Ark-VkRender-Dev-Log-0/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Cxy&#39;s Blog" type="application/atom+xml">
   
@@ -41,8 +43,8 @@
 <link rel="stylesheet" href="/css/style.css">
 
   
+    <link href="//cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" rel="stylesheet">
   
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css">
   
   
   
@@ -321,16 +323,25 @@
 
   
   
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">Catalogue</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#VkRenderer-from-scratch"><span class="toc-number">1.</span> <span class="toc-text">VkRenderer from scratch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#About-Vulkan"><span class="toc-number">2.</span> <span class="toc-text">About Vulkan</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Overview"><span class="toc-number">3.</span> <span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#First-of-all-a-window"><span class="toc-number">4.</span> <span class="toc-text">First of all, a window</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
 <main class="main" role="main">
   <div class="content">
-  <article id="post-hello-world" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-Ark-VkRender-Dev-Log-0" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      Hello World
+      Ark VkRender Dev Log 0
     </h1>
   
 
@@ -338,27 +349,71 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/hello-world/" class="article-date">
-	  <time datetime="2022-06-17T03:00:36.044Z" itemprop="datePublished">2022-06-17</time>
+	<a href="/Ark-VkRender-Dev-Log-0/" class="article-date">
+	  <time datetime="2022-07-03T09:21:10.000Z" itemprop="datePublished">2022-07-03</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/Talk/">Talk</a>
+    <a class="article-category-link" href="/categories/computer-graphics/">computer graphics</a>
   </span>
 
         
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Renderer/" rel="tag">Renderer</a>, <a class="article-tag-link-link" href="/tags/Vulkan/" rel="tag">Vulkan</a>
+  </span>
+
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/hello-world/#comments" class="article-comment-link">Comments</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/Ark-VkRender-Dev-Log-0/#comments" class="article-comment-link">Comments</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <h1 id="My-first-hexo-blog"><a href="#My-first-hexo-blog" class="headerlink" title="My first hexo blog."></a>My first hexo blog.</h1><p>Keep doing and do it well.</p>
+        <h2 id="VkRenderer-from-scratch"><a href="#VkRenderer-from-scratch" class="headerlink" title="VkRenderer from scratch"></a>VkRenderer from scratch</h2><p>This renderer is based on a <a target="_blank" rel="noopener" href="https://www.youtube.com/playlist?list=PL8327DO66nu9qYVKLDmdLW_84-yE4auCR">tutorial</a> on youtube (which itself is based on <a target="_blank" rel="noopener" href="https://vulkan-tutorial.com/">https://vulkan-tutorial.com/</a>). My plan is to finish this in <strong>1</strong> month. <strong>Vulkan</strong> is a new API that I never used before, so I will explain the main concepts in detail along the way in order to fully understand it. For the theory part I will reference another serial on youtube - <a target="_blank" rel="noopener" href="https://www.youtube.com/playlist?list=PLmIqTlJ6KsE1Jx5HV4sd2jOe3V1KMHHgn">Vulkan Essentials</a>. </p>
+<h2 id="About-Vulkan"><a href="#About-Vulkan" class="headerlink" title="About Vulkan"></a>About Vulkan</h2><p>Vulkan has the following features:</p>
+<ul>
+<li>Graphics <strong>and</strong> compute API</li>
+<li>Cross-platform and cross-device</li>
+<li>High efficiency and low level</li>
+<li>explicit (verbose) API</li>
+</ul>
+<p>Major Vulkan handles:</p>
+<ul>
+<li>Vulkan instance: VkInstance</li>
+<li>Physical device: VkPhysicalDevice</li>
+<li>Logical device: VkDevice</li>
+</ul>
+<p>Vulkan Extensions 2 types:</p>
+<ol>
+<li>Instance Extensions: Debug features, OS-specific features, Cross-device&#x2F;instance&#x2F;process memory</li>
+<li>Device extensions: Capabilities of a physical device(RTX&#x2F;GTX)</li>
+</ol>
+<p>functions with <strong>EXT</strong> suffix, e.g. <code>vkCreateDebugUtilsMessengerEXT()</code></p>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>Our <strong>FIRST GOAL</strong> is to draw a triangle, so how?</p>
+<p>The answer is roughly about <strong>8</strong> steps in total:</p>
+<ol>
+<li>Instance and physical device selection</li>
+<li>Logical device and queue families.</li>
+<li>Window surface and swap chain.</li>
+<li>Image views and framebuffers.</li>
+<li>Render passes.</li>
+<li>Graphics pipeline.</li>
+<li>Command pools and command buffers.</li>
+<li>Main loop.</li>
+</ol>
+<p>We will build it step by step.</p>
+<h2 id="First-of-all-a-window"><a href="#First-of-all-a-window" class="headerlink" title="First of all, a window"></a>First of all, a window</h2><p>We will use <code>GLFW</code> as our window API, so first thing todo is to build a <strong>WindowSystem</strong>, I have done something similar in another OpenGL based renderer, so I will simply paste the code here.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GLFW_INCLUDE_VULKAN</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;GLFW/glfw3.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> Ark</span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">WindowSystem</span></span></span><br><span class="line"><span class="class">	&#123;</span></span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">Init</span><span class="params">()</span></span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> m_width;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> m_height;</span><br><span class="line"></span><br><span class="line">        std::string m_windowName;</span><br><span class="line">        GLFWwindow* m_window;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="built_in">WindowSystem</span>(<span class="keyword">int</span> w, <span class="keyword">int</span> h, <span class="keyword">const</span> std::string&amp; name);</span><br><span class="line">        ~<span class="built_in">WindowSystem</span>();</span><br><span class="line">        <span class="built_in">WindowSystem</span>(WindowSystem&amp;&amp;) = <span class="keyword">default</span>;</span><br><span class="line">        <span class="comment">// Disable copying</span></span><br><span class="line">        <span class="built_in">WindowSystem</span>(<span class="keyword">const</span> WindowSystem&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">        WindowSystem&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> WindowSystem&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">ShouldClose</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> <span class="built_in">glfwWindowShouldClose</span>(m_window); &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>And its implementation:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;WindowSystem.hpp&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdexcept&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> Ark</span><br><span class="line">&#123;</span><br><span class="line">    WindowSystem::<span class="built_in">WindowSystem</span>(<span class="keyword">const</span> <span class="keyword">int</span> w, <span class="keyword">const</span> <span class="keyword">int</span> h,</span><br><span class="line">                               <span class="keyword">const</span> std::string&amp; name) :</span><br><span class="line">        <span class="built_in">m_width</span>(w), <span class="built_in">m_height</span>(h), <span class="built_in">m_windowName</span>(name)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">Init</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">WindowSystem::Init</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">        <span class="built_in">glfwInit</span>();</span><br><span class="line">        <span class="built_in">glfwWindowHint</span>(GLFW_CLIENT_API, GLFW_NO_API);</span><br><span class="line">        <span class="built_in">glfwWindowHint</span>(GLFW_RESIZABLE, GLFW_FALSE);</span><br><span class="line">        m_window = <span class="built_in">glfwCreateWindow</span>(m_width, m_height, m_windowName.<span class="built_in">c_str</span>(),</span><br><span class="line">                                    <span class="literal">nullptr</span>, <span class="literal">nullptr</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    WindowSystem::~<span class="built_in">WindowSystem</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">glfwDestroyWindow</span>(m_window);</span><br><span class="line">        <span class="built_in">glfwTerminate</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">WindowSystem::CreateWindowSurface</span><span class="params">(VkInstance instance,</span></span></span><br><span class="line"><span class="params"><span class="function">	                                       VkSurfaceKHR* surface)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">glfwCreateWindowSurface</span>(instance, m_window, <span class="literal">nullptr</span>, surface) !=</span><br><span class="line">            VK_SUCCESS)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create window surface!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>We will not get involved with window resizing or input handling when drawing our first triangle, so these functions are enough for us.</p>
 
       
     </div>
@@ -368,7 +423,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>Link：</strong>
-      <a href="https://proton991.github.io/hello-world/" title="Hello World" target="_blank" rel="external">https://proton991.github.io/hello-world/</a>
+      <a href="https://proton991.github.io/Ark-VkRender-Dev-Log-0/" title="Ark VkRender Dev Log 0" target="_blank" rel="external">https://proton991.github.io/Ark-VkRender-Dev-Log-0/</a>
     </li>
     
 <!--     <li class="post-copyright-license">
@@ -399,12 +454,6 @@
   </article>
   
     
-  <section id="comments">
-  	
-
-    
-  </section>
-
 
   
 </div>
@@ -414,15 +463,20 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/ArkRenderer-Project/" title="ArkRenderer Project"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/LearnCpp-day0/" title="LearnCpp-day0"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/ArkRenderer-Dev-Log-1/" title="ArkRenderer Dev Log 1"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="Catalogue" role="button">
+        <span>[&nbsp;</span><span>Catalogue</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
     
   </ul>
   
@@ -494,28 +548,6 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
    
-
-
-
-
-   
-    
-<script src="//cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js"></script>
-<script>
-var gitment = new Gitment({
-  // id默认为当前页面url，如果url后带参数或锚点，gitment要重新初始化
-  // https://github.com/imsun/gitment/issues/55
-  // 解决方案：id:window.location.pathname,或者将id设置为当前页面标题
-  id: 'Hello World', 
-  owner: '', // 可以是你的GitHub用户名，也可以是github id
-  repo: '',
-  oauth: {
-    client_id: '',
-    client_secret: '',
-  }
-})
-gitment.render('comments')
-</script>
 
 
 
