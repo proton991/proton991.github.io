@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Ark VkRenderer Dev Log 4 | Proton&#39;s Blog</title>
+  <meta name="description" content="Graphics pipelinesGraphic pipeline overview:   The input assembler collects the raw vertex data from the buffers you specify and may also use an index buffer to repeat certain elements without having">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ark VkRenderer Dev Log 4">
+<meta property="og:url" content="https://proton991.github.io/Ark-VkRenderer-Dev-Log-4/index.html">
+<meta property="og:site_name" content="Cxy&#39;s Blog">
+<meta property="og:description" content="Graphics pipelinesGraphic pipeline overview:   The input assembler collects the raw vertex data from the buffers you specify and may also use an index buffer to repeat certain elements without having">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://proton991.github.io/Ark-VkRenderer-Dev-Log-4/vulkan_simplified_pipeline.svg">
+<meta property="article:published_time" content="2022-07-05T06:15:51.000Z">
+<meta property="article:modified_time" content="2022-07-05T08:16:21.604Z">
+<meta property="article:author" content="Cui Xinyu">
+<meta property="article:tag" content="Renderer">
+<meta property="article:tag" content="Vulkan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://proton991.github.io/Ark-VkRenderer-Dev-Log-4/vulkan_simplified_pipeline.svg">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://proton991.github.io/Ark-VkRenderer-Dev-Log-4/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Cxy&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <link href="//cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" rel="stylesheet">
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="main-center theme-black# 主题颜色 theme-black theme-blue theme-green theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/proton991" target="_blank">
+          <img class="img-circle img-rotate" src="/images/minions.jpeg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Cui Xinyu</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Farmer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shanghai, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/proton991" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>Welcome!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Graphics/">Computer Graphics</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cpp/">Cpp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Talk/">Talk</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer-graphics/">computer graphics</a><span class="category-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/" rel="tag">OpenGL</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Renderer/" rel="tag">Renderer</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c-STL/" rel="tag">c++ STL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer-graphics/" rel="tag">computer-graphics</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ray-tracing/" rel="tag">ray-tracing</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/OpenGL/" style="font-size: 13.33px;">OpenGL</a> <a href="/tags/Renderer/" style="font-size: 14px;">Renderer</a> <a href="/tags/Vulkan/" style="font-size: 13.67px;">Vulkan</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/c/" style="font-size: 13px;">c++</a> <a href="/tags/c-STL/" style="font-size: 13px;">c++ STL</a> <a href="/tags/computer-graphics/" style="font-size: 13px;">computer-graphics</a> <a href="/tags/ray-tracing/" style="font-size: 13px;">ray-tracing</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-6/" class="title">Ark VkRenderer Dev Log 6</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T12:25:40.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Computer-Graphics/">Computer Graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-5/" class="title">Ark VkRenderer Dev Log 5</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T09:16:11.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-4/" class="title">Ark VkRenderer Dev Log 4</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T06:15:51.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-3/" class="title">Ark VkRenderer Dev Log 3</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T02:45:22.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-2/" class="title">Ark VkRenderer Dev Log 2</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T01:03:54.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">Catalogue</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Graphics-pipelines"><span class="toc-number">1.</span> <span class="toc-text">Graphics pipelines</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fixed-function-stages"><span class="toc-number">2.</span> <span class="toc-text">Fixed-function stages</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Vertex-input"><span class="toc-number">2.1.</span> <span class="toc-text">Vertex input</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Input-assembly"><span class="toc-number">3.</span> <span class="toc-text">Input assembly</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Viewports-and-scissors"><span class="toc-number">4.</span> <span class="toc-text">Viewports and scissors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Rasterizer"><span class="toc-number">5.</span> <span class="toc-text">Rasterizer</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Multisampling"><span class="toc-number">5.1.</span> <span class="toc-text">Multisampling</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Depth-and-stencil-testing"><span class="toc-number">5.2.</span> <span class="toc-text">Depth and stencil testing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Color-blending"><span class="toc-number">5.3.</span> <span class="toc-text">Color blending</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pipeline-layout"><span class="toc-number">5.4.</span> <span class="toc-text">Pipeline layout</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Ark-VkRenderer-Dev-Log-4" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Ark VkRenderer Dev Log 4
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/Ark-VkRenderer-Dev-Log-4/" class="article-date">
+	  <time datetime="2022-07-05T06:15:51.000Z" itemprop="datePublished">2022-07-05</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/computer-graphics/">computer graphics</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Renderer/" rel="tag">Renderer</a>, <a class="article-tag-link-link" href="/tags/Vulkan/" rel="tag">Vulkan</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/Ark-VkRenderer-Dev-Log-4/#comments" class="article-comment-link">Comments</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="Graphics-pipelines"><a href="#Graphics-pipelines" class="headerlink" title="Graphics pipelines"></a>Graphics pipelines</h2><p>Graphic pipeline overview:</p>
+<p><img src="/Ark-VkRenderer-Dev-Log-4/vulkan_simplified_pipeline.svg" alt="graphics-pipeline"></p>
+<ol>
+<li><p>The <em>input assembler</em> collects the raw vertex data from the buffers you specify and may also use an index buffer to repeat certain elements without having to duplicate the vertex data itself.</p>
+</li>
+<li><p>The <em>vertex shader</em> is run for every vertex and generally applies transformations to turn vertex positions from model space to screen space. It also passes per-vertex data down the pipeline.</p>
+</li>
+<li><p>The <em>tessellation shaders</em> allow you to subdivide geometry based on certain rules to increase the mesh quality. This is often used to make surfaces like brick walls and staircases look less flat when they are nearby.</p>
+</li>
+<li><p>The <em>geometry shader</em> is run on every primitive (triangle, line, point) and can discard it or output more primitives than came in. This is similar to the tessellation shader, but much more flexible. However, it is not used much in today’s applications because the performance is not that good on most graphics cards except for Intel’s integrated GPUs.</p>
+</li>
+<li><p>The <em>rasterization</em> stage discretizes the primitives into <em>fragments</em>. These are the pixel elements that they fill on the framebuffer. Any fragments that fall outside the screen are discarded and the attributes outputted by the vertex shader are interpolated across the fragments, as shown in the figure. Usually the fragments that are behind other primitive fragments are also discarded here because of depth testing.</p>
+</li>
+<li><p>The <em>fragment shader</em> is invoked for every fragment that survives and determines which framebuffer(s) the fragments are written to and with which color and depth values. It can do this using the interpolated data from the vertex shader, which can include things like texture coordinates and normals for lighting.</p>
+</li>
+<li><p>The <em>color blending</em> stage applies operations to mix different fragments that map to the same pixel in the framebuffer. Fragments can simply overwrite each other, add up or be mixed based upon transparency.</p>
+</li>
+</ol>
+<p>Stages with a green color are known as <em>fixed-function</em> stages. These stages allow you to tweak their operations using parameters, but the way they work is predefined.</p>
+<p>Stages with an orange color on the other hand are <code>programmable</code>, which means that you can upload your own code to the graphics card to apply exactly the operations you want. This allows you to use fragment shaders, for example, to implement anything from texturing and lighting to ray tracers. These programs run on many GPU cores simultaneously to process many objects, like vertices and fragments in parallel.</p>
+<p>The graphics pipeline in Vulkan is almost completely immutable, so you must recreate the pipeline from scratch if you want to change shaders, bind different framebuffers or change the blend function. </p>
+<ul>
+<li>Disadvantage: you’ll have to create a number of pipelines that represent all of the different combinations of states you want to use in your rendering operations. </li>
+<li>Advantages: because all of the operations you’ll be doing in the pipeline are known in advance, the driver can optimize for it much better.</li>
+</ul>
+<p>Some of the programmable stages are optional, our first goal is to draw a triangle, so we only need <em>vertex shader</em> stage and <em>fragment shader</em> stage.</p>
+<h2 id="Fixed-function-stages"><a href="#Fixed-function-stages" class="headerlink" title="Fixed-function stages"></a>Fixed-function stages</h2><p>First let’s take a look at those fixed-function stages. </p>
+<p>These stages’ initialization can be done in one function by taking in different parameters(using structs). Our first app is just drawing a triangle, so we create a function to populate default settings to these fixed-function stages.</p>
+<p>First, we need a struct to wrap all these stages together:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">PipelineConfigInfo</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    VkViewport viewport;</span><br><span class="line">    VkRect2D scissor;</span><br><span class="line">    VkPipelineViewportStateCreateInfo viewportInfo;</span><br><span class="line">    VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;</span><br><span class="line">    VkPipelineRasterizationStateCreateInfo rasterizationInfo;</span><br><span class="line">    VkPipelineMultisampleStateCreateInfo multisampleInfo;</span><br><span class="line">    VkPipelineColorBlendAttachmentState colorBlendAttachment;</span><br><span class="line">    VkPipelineColorBlendStateCreateInfo colorBlendInfo;</span><br><span class="line">    VkPipelineDepthStencilStateCreateInfo depthStencilInfo;</span><br><span class="line">    VkPipelineLayout pipelineLayout = <span class="literal">nullptr</span>;</span><br><span class="line">    VkRenderPass renderPass = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="keyword">uint32_t</span> subpass = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">PipelineConfigInfo</span>() = <span class="keyword">default</span>;</span><br><span class="line">    <span class="built_in">PipelineConfigInfo</span>(<span class="keyword">const</span> PipelineConfigInfo&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    PipelineConfigInfo&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> PipelineConfigInfo&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Next, define a function to populate default configurations:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ArkPipeline::DefaultPipelineConfigInfo</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    PipelineConfigInfo&amp; configInfo,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">uint32_t</span> width, <span class="keyword">uint32_t</span> height)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    configInfo.inputAssemblyInfo.sType =</span><br><span class="line">        VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;</span><br><span class="line">    configInfo.inputAssemblyInfo.topology =</span><br><span class="line">        VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;</span><br><span class="line">    configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;</span><br><span class="line"></span><br><span class="line">    configInfo.viewport.x = <span class="number">0.0f</span>;</span><br><span class="line">    configInfo.viewport.y = <span class="number">0.0f</span>;</span><br><span class="line">    configInfo.viewport.width = <span class="keyword">static_cast</span>&lt;<span class="keyword">float</span>&gt;(width);</span><br><span class="line">    configInfo.viewport.height = <span class="keyword">static_cast</span>&lt;<span class="keyword">float</span>&gt;(height);</span><br><span class="line">    configInfo.viewport.minDepth = <span class="number">0.0f</span>;</span><br><span class="line">    configInfo.viewport.maxDepth = <span class="number">1.0f</span>;</span><br><span class="line"></span><br><span class="line">    configInfo.scissor.offset = &#123;<span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">    configInfo.scissor.extent = &#123;width, height&#125;;</span><br><span class="line">    configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;</span><br><span class="line">    configInfo.viewportInfo.viewportCount = <span class="number">1</span>;</span><br><span class="line">    configInfo.viewportInfo.pViewports = &amp;configInfo.viewport;</span><br><span class="line">    configInfo.viewportInfo.scissorCount = <span class="number">1</span>;</span><br><span class="line">    configInfo.viewportInfo.pScissors = &amp;configInfo.scissor;</span><br><span class="line"></span><br><span class="line">    configInfo.rasterizationInfo.sType =</span><br><span class="line">        VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;</span><br><span class="line">    configInfo.rasterizationInfo.depthClampEnable = VK_FALSE;</span><br><span class="line">    configInfo.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;</span><br><span class="line">    configInfo.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;</span><br><span class="line">    configInfo.rasterizationInfo.lineWidth = <span class="number">1.0f</span>;</span><br><span class="line">    configInfo.rasterizationInfo.cullMode = VK_CULL_MODE_NONE;</span><br><span class="line">    configInfo.rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;</span><br><span class="line">    configInfo.rasterizationInfo.depthBiasEnable = VK_FALSE;</span><br><span class="line">    configInfo.rasterizationInfo.depthBiasConstantFactor = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.rasterizationInfo.depthBiasClamp = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.rasterizationInfo.depthBiasSlopeFactor = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line"></span><br><span class="line">    configInfo.multisampleInfo.sType =</span><br><span class="line">        VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;</span><br><span class="line">    configInfo.multisampleInfo.sampleShadingEnable = VK_FALSE;</span><br><span class="line">    configInfo.multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;</span><br><span class="line">    configInfo.multisampleInfo.minSampleShading = <span class="number">1.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.multisampleInfo.pSampleMask = <span class="literal">nullptr</span>; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.multisampleInfo.alphaToCoverageEnable = VK_FALSE; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.multisampleInfo.alphaToOneEnable = VK_FALSE; <span class="comment">// Optional</span></span><br><span class="line"></span><br><span class="line">    configInfo.colorBlendAttachment.colorWriteMask =</span><br><span class="line">        VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |</span><br><span class="line">        VK_COLOR_COMPONENT_B_BIT |</span><br><span class="line">        VK_COLOR_COMPONENT_A_BIT;</span><br><span class="line">    configInfo.colorBlendAttachment.blendEnable = VK_FALSE;</span><br><span class="line">    configInfo.colorBlendAttachment.srcColorBlendFactor =</span><br><span class="line">        VK_BLEND_FACTOR_ONE; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.colorBlendAttachment.dstColorBlendFactor =</span><br><span class="line">        VK_BLEND_FACTOR_ZERO; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;</span><br><span class="line">    <span class="comment">// Optional</span></span><br><span class="line">    configInfo.colorBlendAttachment.srcAlphaBlendFactor =</span><br><span class="line">        VK_BLEND_FACTOR_ONE; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.colorBlendAttachment.dstAlphaBlendFactor =</span><br><span class="line">        VK_BLEND_FACTOR_ZERO; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;</span><br><span class="line">    <span class="comment">// Optional</span></span><br><span class="line"></span><br><span class="line">    configInfo.colorBlendInfo.sType =</span><br><span class="line">        VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;</span><br><span class="line">    configInfo.colorBlendInfo.logicOpEnable = VK_FALSE;</span><br><span class="line">    configInfo.colorBlendInfo.logicOp = VK_LOGIC_OP_COPY; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.colorBlendInfo.attachmentCount = <span class="number">1</span>;</span><br><span class="line">    configInfo.colorBlendInfo.pAttachments = &amp;configInfo.</span><br><span class="line">        colorBlendAttachment;</span><br><span class="line">    configInfo.colorBlendInfo.blendConstants[<span class="number">0</span>] = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.colorBlendInfo.blendConstants[<span class="number">1</span>] = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.colorBlendInfo.blendConstants[<span class="number">2</span>] = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.colorBlendInfo.blendConstants[<span class="number">3</span>] = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line"></span><br><span class="line">    configInfo.depthStencilInfo.sType =</span><br><span class="line">        VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;</span><br><span class="line">    configInfo.depthStencilInfo.depthTestEnable = VK_TRUE;</span><br><span class="line">    configInfo.depthStencilInfo.depthWriteEnable = VK_TRUE;</span><br><span class="line">    configInfo.depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS;</span><br><span class="line">    configInfo.depthStencilInfo.depthBoundsTestEnable = VK_FALSE;</span><br><span class="line">    configInfo.depthStencilInfo.minDepthBounds = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.depthStencilInfo.maxDepthBounds = <span class="number">1.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.depthStencilInfo.stencilTestEnable = VK_FALSE;</span><br><span class="line">    configInfo.depthStencilInfo.front = &#123;&#125;; <span class="comment">// Optional</span></span><br><span class="line">    configInfo.depthStencilInfo.back = &#123;&#125;; <span class="comment">// Optional</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Vertex-input"><a href="#Vertex-input" class="headerlink" title="Vertex input"></a>Vertex input</h3><p>The <a target="_blank" rel="noopener" href="https://www.khronos.org/registry/vulkan/specs/1.0/man/html/VkPipelineVertexInputStateCreateInfo.html"><code>VkPipelineVertexInputStateCreateInfo</code></a> structure describes the format of the vertex data that will be passed to the vertex shader. It describes this in roughly two ways:</p>
+<ul>
+<li>Bindings: spacing between data and whether the data is per-vertex or per-instance (see <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Geometry_instancing">instancing</a>)</li>
+<li>Attribute descriptions: type of the attributes passed to the vertex shader, which binding to load them from and at which offset</li>
+</ul>
+<h2 id="Input-assembly"><a href="#Input-assembly" class="headerlink" title="Input assembly"></a>Input assembly</h2><p>The <a target="_blank" rel="noopener" href="https://www.khronos.org/registry/vulkan/specs/1.0/man/html/VkPipelineInputAssemblyStateCreateInfo.html"><code>VkPipelineInputAssemblyStateCreateInfo</code></a> struct describes two things: what kind of geometry will be drawn from the vertices and if primitive restart should be enabled. The former is specified in the <code>topology</code> member and can have values like:</p>
+<ul>
+<li><code>VK_PRIMITIVE_TOPOLOGY_POINT_LIST</code>: points from vertices</li>
+<li><code>VK_PRIMITIVE_TOPOLOGY_LINE_LIST</code>: line from every 2 vertices without reuse</li>
+<li><code>VK_PRIMITIVE_TOPOLOGY_LINE_STRIP</code>: the end vertex of every line is used as start vertex for the next line</li>
+<li><code>VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST</code>: triangle from every 3 vertices without reuse</li>
+<li><code>VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP</code>: the second and third vertex of every triangle are used as first two vertices of the next triangle</li>
+</ul>
+<h2 id="Viewports-and-scissors"><a href="#Viewports-and-scissors" class="headerlink" title="Viewports and scissors"></a>Viewports and scissors</h2><p>A viewport basically describes the region of the framebuffer that the output will be rendered to. This will almost always be <code>(0, 0)</code> to <code>(width, height)</code> and in this tutorial that will also be the case.</p>
+<p>While viewports define the transformation from the image to the framebuffer, scissor rectangles define in which regions pixels will actually be stored. Any pixels outside the scissor rectangles will be discarded by the rasterizer. They function like a filter rather than a transformation. </p>
+<h2 id="Rasterizer"><a href="#Rasterizer" class="headerlink" title="Rasterizer"></a>Rasterizer</h2><p>The rasterizer takes the geometry that is shaped by the vertices from the vertex shader and turns it into fragments to be colored by the fragment shader. It also performs <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Z-buffering">depth testing</a>, <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Back-face_culling">face culling</a> and the scissor test, and it can be configured to output fragments that fill entire polygons or just the edges (wireframe rendering). All this is configured using the <a target="_blank" rel="noopener" href="https://www.khronos.org/registry/vulkan/specs/1.0/man/html/VkPipelineRasterizationStateCreateInfo.html"><code>VkPipelineRasterizationStateCreateInfo</code></a> structure.</p>
+<h3 id="Multisampling"><a href="#Multisampling" class="headerlink" title="Multisampling"></a>Multisampling</h3><p>The <a target="_blank" rel="noopener" href="https://www.khronos.org/registry/vulkan/specs/1.0/man/html/VkPipelineMultisampleStateCreateInfo.html"><code>VkPipelineMultisampleStateCreateInfo</code></a> struct configures multisampling, which is one of the ways to perform <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Multisample_anti-aliasing">anti-aliasing</a>. It works by combining the fragment shader results of multiple polygons that rasterize to the same pixel. This mainly occurs along edges, which is also where the most noticeable aliasing artifacts occur. Because it doesn’t need to run the fragment shader multiple times if only one polygon maps to a pixel, it is significantly less expensive than simply rendering to a higher resolution and then downscaling. Enabling it requires enabling a GPU feature.</p>
+<h3 id="Depth-and-stencil-testing"><a href="#Depth-and-stencil-testing" class="headerlink" title="Depth and stencil testing"></a>Depth and stencil testing</h3><p>If you are using a depth and&#x2F;or stencil buffer, then you also need to configure the depth and stencil tests using <a target="_blank" rel="noopener" href="https://www.khronos.org/registry/vulkan/specs/1.0/man/html/VkPipelineDepthStencilStateCreateInfo.html"><code>VkPipelineDepthStencilStateCreateInfo</code></a>.</p>
+<h3 id="Color-blending"><a href="#Color-blending" class="headerlink" title="Color blending"></a>Color blending</h3><p>After a fragment shader has returned a color, it needs to be combined with the color that is already in the framebuffer. This transformation is known as color blending and there are two ways to do it:</p>
+<ul>
+<li>Mix the old and new value to produce a final color</li>
+<li>Combine the old and new value using a bitwise operation.</li>
+</ul>
+<h3 id="Pipeline-layout"><a href="#Pipeline-layout" class="headerlink" title="Pipeline layout"></a>Pipeline layout</h3><p>These uniform values need to be specified during pipeline creation by creating a <a target="_blank" rel="noopener" href="https://www.khronos.org/registry/vulkan/specs/1.0/man/html/VkPipelineLayout.html"><code>VkPipelineLayout</code></a> object.</p>
+<p>This part is configured in our own application. We will come to this in the next dev log.</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>Link：</strong>
+      <a href="https://proton991.github.io/Ark-VkRenderer-Dev-Log-4/" title="Ark VkRenderer Dev Log 4" target="_blank" rel="external">https://proton991.github.io/Ark-VkRenderer-Dev-Log-4/</a>
+    </li>
+    
+<!--     <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li> -->
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/proton991" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/minions.jpeg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/proton991" target="_blank"><span class="text-dark">Cui Xinyu</span><small class="ml-1x">Farmer</small></a></h3>
+        <div>He is lazy...</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/Ark-VkRenderer-Dev-Log-5/" title="Ark VkRenderer Dev Log 5"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/Ark-VkRenderer-Dev-Log-3/" title="Ark VkRenderer Dev Log 3"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="Catalogue" role="button">
+        <span>[&nbsp;</span><span>Catalogue</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/proton991" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>

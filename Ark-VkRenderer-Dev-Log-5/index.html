@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Ark VkRenderer Dev Log 5 | Proton&#39;s Blog</title>
+  <meta name="description" content="Render passesBefore we can finish creating the pipeline, we need to tell Vulkan about the framebuffer attachments that will be used while rendering. We need to specify how many color and depth buffers">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ark VkRenderer Dev Log 5">
+<meta property="og:url" content="https://proton991.github.io/Ark-VkRenderer-Dev-Log-5/index.html">
+<meta property="og:site_name" content="Cxy&#39;s Blog">
+<meta property="og:description" content="Render passesBefore we can finish creating the pipeline, we need to tell Vulkan about the framebuffer attachments that will be used while rendering. We need to specify how many color and depth buffers">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-05T09:16:11.000Z">
+<meta property="article:modified_time" content="2022-07-05T11:00:40.914Z">
+<meta property="article:author" content="Cui Xinyu">
+<meta property="article:tag" content="Renderer">
+<meta property="article:tag" content="Vulkan">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://proton991.github.io/Ark-VkRenderer-Dev-Log-5/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Cxy&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <link href="//cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" rel="stylesheet">
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="main-center theme-black# 主题颜色 theme-black theme-blue theme-green theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/proton991" target="_blank">
+          <img class="img-circle img-rotate" src="/images/minions.jpeg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Cui Xinyu</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Farmer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shanghai, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/proton991" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>Welcome!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Graphics/">Computer Graphics</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cpp/">Cpp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Talk/">Talk</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer-graphics/">computer graphics</a><span class="category-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/" rel="tag">OpenGL</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Renderer/" rel="tag">Renderer</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c-STL/" rel="tag">c++ STL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer-graphics/" rel="tag">computer-graphics</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ray-tracing/" rel="tag">ray-tracing</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/OpenGL/" style="font-size: 13.33px;">OpenGL</a> <a href="/tags/Renderer/" style="font-size: 14px;">Renderer</a> <a href="/tags/Vulkan/" style="font-size: 13.67px;">Vulkan</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/c/" style="font-size: 13px;">c++</a> <a href="/tags/c-STL/" style="font-size: 13px;">c++ STL</a> <a href="/tags/computer-graphics/" style="font-size: 13px;">computer-graphics</a> <a href="/tags/ray-tracing/" style="font-size: 13px;">ray-tracing</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-6/" class="title">Ark VkRenderer Dev Log 6</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T12:25:40.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Computer-Graphics/">Computer Graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-5/" class="title">Ark VkRenderer Dev Log 5</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T09:16:11.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-4/" class="title">Ark VkRenderer Dev Log 4</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T06:15:51.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-3/" class="title">Ark VkRenderer Dev Log 3</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T02:45:22.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-2/" class="title">Ark VkRenderer Dev Log 2</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T01:03:54.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">Catalogue</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Render-passes"><span class="toc-number">1.</span> <span class="toc-text">Render passes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Create-Shader-Modules"><span class="toc-number">2.</span> <span class="toc-text">Create Shader Modules</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Ark-VkRenderer-Dev-Log-5" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Ark VkRenderer Dev Log 5
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/Ark-VkRenderer-Dev-Log-5/" class="article-date">
+	  <time datetime="2022-07-05T09:16:11.000Z" itemprop="datePublished">2022-07-05</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Computer-Graphics/">Computer Graphics</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Renderer/" rel="tag">Renderer</a>, <a class="article-tag-link-link" href="/tags/Vulkan/" rel="tag">Vulkan</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/Ark-VkRenderer-Dev-Log-5/#comments" class="article-comment-link">Comments</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="Render-passes"><a href="#Render-passes" class="headerlink" title="Render passes"></a>Render passes</h2><p>Before we can finish creating the pipeline, we need to tell Vulkan about the framebuffer attachments that will be used while rendering. We need to specify how many <strong>color</strong> and <strong>depth buffers</strong> there will be, how many samples to use for each of them and how their contents should be handled throughout the rendering operations. </p>
+<p>We need <code>VkAttachmentDescription</code> and <code>VkAttachmentReference</code>. <code>VkSubpassDescription</code> is stored in render pass object and <code>VkAttachmentReference</code> is stored in sub passes. Making it possible for sub passes to reference the same attachment.</p>
+<p>When specifying <code>VkAttachmentReference</code>, the <code>attachment</code> parameter specifies which attachment to reference by its index in the attachment descriptions array. In this simple example, we have <strong>0</strong> for <code>colorAttachmentRef</code> and <strong>1</strong> for <code>depthAttachmentRef</code>. </p>
+<p>Here is the complete code:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ArkSwapChain::CreateRenderPass</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    VkAttachmentDescription depthAttachment&#123;&#125;;</span><br><span class="line">    depthAttachment.format = <span class="built_in">FindDepthFormat</span>();</span><br><span class="line">    depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;</span><br><span class="line">    depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;</span><br><span class="line">    depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;</span><br><span class="line">    depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;</span><br><span class="line">    depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;</span><br><span class="line">    depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;</span><br><span class="line">    depthAttachment.finalLayout =</span><br><span class="line">        VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;</span><br><span class="line"></span><br><span class="line">    VkAttachmentReference depthAttachmentRef&#123;&#125;;</span><br><span class="line">    depthAttachmentRef.attachment = <span class="number">1</span>;</span><br><span class="line">    depthAttachmentRef.layout =</span><br><span class="line">        VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;</span><br><span class="line"></span><br><span class="line">    VkAttachmentDescription colorAttachment = &#123;&#125;;</span><br><span class="line">    colorAttachment.format = <span class="built_in">GetSwapChainImageFormat</span>();</span><br><span class="line">    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;</span><br><span class="line">    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;</span><br><span class="line">    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;</span><br><span class="line">    colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;</span><br><span class="line">    colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;</span><br><span class="line">    colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;</span><br><span class="line">    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;</span><br><span class="line"></span><br><span class="line">    VkAttachmentReference colorAttachmentRef = &#123;&#125;;</span><br><span class="line">    colorAttachmentRef.attachment = <span class="number">0</span>;</span><br><span class="line">    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;</span><br><span class="line"></span><br><span class="line">    VkSubpassDescription subpass = &#123;&#125;;</span><br><span class="line">    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;</span><br><span class="line">    subpass.colorAttachmentCount = <span class="number">1</span>;</span><br><span class="line">    subpass.pColorAttachments = &amp;colorAttachmentRef;</span><br><span class="line">    subpass.pDepthStencilAttachment = &amp;depthAttachmentRef;</span><br><span class="line"></span><br><span class="line">    VkSubpassDependency dependency = &#123;&#125;;</span><br><span class="line">    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;</span><br><span class="line">    dependency.srcAccessMask = <span class="number">0</span>;</span><br><span class="line">    dependency.srcStageMask =</span><br><span class="line">        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |</span><br><span class="line">        VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;</span><br><span class="line">    dependency.dstSubpass = <span class="number">0</span>;</span><br><span class="line">    dependency.dstStageMask =</span><br><span class="line">        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |</span><br><span class="line">        VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;</span><br><span class="line">    dependency.dstAccessMask =</span><br><span class="line">        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT |</span><br><span class="line">        VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;</span><br><span class="line"></span><br><span class="line">    std::array&lt;VkAttachmentDescription, 2&gt; attachments = &#123;</span><br><span class="line">        colorAttachment, depthAttachment</span><br><span class="line">    &#125;;</span><br><span class="line">    VkRenderPassCreateInfo renderPassInfo = &#123;&#125;;</span><br><span class="line">    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;</span><br><span class="line">    renderPassInfo.attachmentCount = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(attachments.</span><br><span class="line">                                                           <span class="built_in">size</span>());</span><br><span class="line">    renderPassInfo.pAttachments = attachments.<span class="built_in">data</span>();</span><br><span class="line">    renderPassInfo.subpassCount = <span class="number">1</span>;</span><br><span class="line">    renderPassInfo.pSubpasses = &amp;subpass;</span><br><span class="line">    renderPassInfo.dependencyCount = <span class="number">1</span>;</span><br><span class="line">    renderPassInfo.pDependencies = &amp;dependency;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">vkCreateRenderPass</span>(m_device.<span class="built_in">Device</span>(), &amp;renderPassInfo, <span class="literal">nullptr</span>,</span><br><span class="line">                           &amp;m_renderPass) != VK_SUCCESS)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create render pass!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Create-Shader-Modules"><a href="#Create-Shader-Modules" class="headerlink" title="Create Shader Modules"></a>Create Shader Modules</h2><p>Last time we configured those fixed-function stages, to create a complete pipeline, we still need to create shader modules for vertex shader and fragment shader. My development environment is <strong>Windows11</strong> using <strong>Visual Studio 2022</strong>, the code is simple, but we have to do something else to make it work.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ArkPipeline::CreateShaderModule</span><span class="params">(<span class="keyword">const</span> std::vector&lt;<span class="keyword">char</span>&gt;&amp; code,</span></span></span><br><span class="line"><span class="params"><span class="function">                                     VkShaderModule* shaderModule)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    VkShaderModuleCreateInfo createInfo&#123;&#125;;</span><br><span class="line">    createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;</span><br><span class="line">    createInfo.codeSize = code.<span class="built_in">size</span>();</span><br><span class="line">    createInfo.pCode = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">uint32_t</span>*&gt;(code.<span class="built_in">data</span>());</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">vkCreateShaderModule</span>(m_arkDevice.<span class="built_in">Device</span>(), &amp;createInfo, <span class="literal">nullptr</span>,</span><br><span class="line">                             shaderModule) != VK_SUCCESS)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create shader module!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>We also need a function to read shader file:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vector&lt;<span class="keyword">char</span>&gt; <span class="title">ResourceManager::ReadTextFile</span><span class="params">(<span class="keyword">const</span> std::filesystem::path&amp; path)</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// std::ios::ate seek to the end</span></span><br><span class="line">    <span class="function">std::ifstream <span class="title">file</span><span class="params">(path, std::ios::ate | std::ios::binary)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!file.<span class="built_in">is_open</span>()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to open file!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">size_t</span> fileSize = <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span>&gt;(file.<span class="built_in">tellg</span>());</span><br><span class="line">    </span><br><span class="line">    <span class="function">std::vector&lt;<span class="keyword">char</span>&gt; <span class="title">buffer</span><span class="params">(fileSize)</span></span>;</span><br><span class="line"></span><br><span class="line">    file.<span class="built_in">seekg</span>(<span class="number">0</span>);</span><br><span class="line">    file.<span class="built_in">read</span>(buffer.<span class="built_in">data</span>(), fileSize);</span><br><span class="line"></span><br><span class="line">    file.<span class="built_in">close</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> buffer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Unlike earlier APIs, shader code in Vulkan has to be specified in a bytecode format as opposed to human-readable syntax like <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/OpenGL_Shading_Language">GLSL</a> and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/High-Level_Shading_Language">HLSL</a>. This bytecode format is called <a target="_blank" rel="noopener" href="https://www.khronos.org/spir">SPIR-V</a> and is designed to be used with both Vulkan and OpenCL (both Khronos APIs). It is a format that can be used to write graphics and compute shaders.</p>
+<p>So the shader code we write must be complied into SPIR-V format before we use them, the compilation can be done using <code>glslangValidator.exe</code> or <code>glslc.exe</code>. The advantage of <code>glslc</code> is that it uses the same parameter format as well-known compilers like GCC and Clang and includes some extra functionality like <em>includes</em>. Both of them are already included in the Vulkan SDK.</p>
+<p>In Visual Studio, I created a batch file to build the shaders and run this batch script as a pre-build event. </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> %~dp0..\shaders</span><br><span class="line"><span class="built_in">echo</span> %<span class="built_in">cd</span>%</span><br><span class="line"><span class="keyword">for</span> %%i <span class="keyword">in</span> (*.vert *.frag) <span class="keyword">do</span> ( glslc.exe %%i -o %%i.spv )</span><br></pre></td></tr></table></figure>
+
+<p>We also need to add the shader files to our project and change their <strong>Item Type</strong> to <strong>Custom Build Tool</strong>. When the contents of the shader files change, they will be compiled automatically.</p>
+<p>Finally change <code>.vcxproj</code> file, add a custom clean command to clean the compiled shader files when we <strong>clean</strong> our project.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Project</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">Target</span> <span class="attr">Name</span>=<span class="string">&quot;CustomClean&quot;</span> <span class="attr">BeforeTargets</span>=<span class="string">&quot;CoreClean&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Message</span> <span class="attr">Text</span>=<span class="string">&quot;Clean up compiled spv shaders&quot;</span> <span class="attr">Importance</span>=<span class="string">&quot;high&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ItemGroup</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">_ShaderFilesToDelete</span> <span class="attr">Include</span>=<span class="string">&quot;$(ProjectDir)shaders\*.spv&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">ItemGroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Delete</span> <span class="attr">Files</span>=<span class="string">&quot;@(_ShaderFilesToDelete)&quot;</span> /&gt;</span></span><br><span class="line">  	<span class="tag">&lt;/<span class="name">Target</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>That’s all for today, next we will get involved with <code>FrameBuffer</code> and <code>CommandBuffer</code>, then we can finally draw our FIRST triangle!!</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>Link：</strong>
+      <a href="https://proton991.github.io/Ark-VkRenderer-Dev-Log-5/" title="Ark VkRenderer Dev Log 5" target="_blank" rel="external">https://proton991.github.io/Ark-VkRenderer-Dev-Log-5/</a>
+    </li>
+    
+<!--     <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li> -->
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/proton991" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/minions.jpeg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/proton991" target="_blank"><span class="text-dark">Cui Xinyu</span><small class="ml-1x">Farmer</small></a></h3>
+        <div>He is lazy...</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/Ark-VkRenderer-Dev-Log-6/" title="Ark VkRenderer Dev Log 6"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/Ark-VkRenderer-Dev-Log-4/" title="Ark VkRenderer Dev Log 4"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="Catalogue" role="button">
+        <span>[&nbsp;</span><span>Catalogue</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/proton991" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>

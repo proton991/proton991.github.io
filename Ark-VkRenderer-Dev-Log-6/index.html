@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Ark VkRenderer Dev Log 6 | Proton&#39;s Blog</title>
+  <meta name="description" content="FramebuffersFirst, create another std::vector class member to hold the framebuffers: 1std::vector&lt;VkFramebuffer&gt; m_swapChainFrameBuffers;  Start by resizing the container to hold all of the fram">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ark VkRenderer Dev Log 6">
+<meta property="og:url" content="https://proton991.github.io/Ark-VkRenderer-Dev-Log-6/index.html">
+<meta property="og:site_name" content="Cxy&#39;s Blog">
+<meta property="og:description" content="FramebuffersFirst, create another std::vector class member to hold the framebuffers: 1std::vector&lt;VkFramebuffer&gt; m_swapChainFrameBuffers;  Start by resizing the container to hold all of the fram">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-05T12:25:40.000Z">
+<meta property="article:modified_time" content="2022-07-05T13:18:00.684Z">
+<meta property="article:author" content="Cui Xinyu">
+<meta property="article:tag" content="Renderer">
+<meta property="article:tag" content="Vulkan">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://proton991.github.io/Ark-VkRenderer-Dev-Log-6/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Cxy&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <link href="//cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" rel="stylesheet">
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="main-center theme-black# 主题颜色 theme-black theme-blue theme-green theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/proton991" target="_blank">
+          <img class="img-circle img-rotate" src="/images/minions.jpeg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Cui Xinyu</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Farmer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shanghai, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/proton991" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>Welcome!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Graphics/">Computer Graphics</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cpp/">Cpp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Talk/">Talk</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer-graphics/">computer graphics</a><span class="category-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/" rel="tag">OpenGL</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Renderer/" rel="tag">Renderer</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c-STL/" rel="tag">c++ STL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer-graphics/" rel="tag">computer-graphics</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ray-tracing/" rel="tag">ray-tracing</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/OpenGL/" style="font-size: 13.33px;">OpenGL</a> <a href="/tags/Renderer/" style="font-size: 14px;">Renderer</a> <a href="/tags/Vulkan/" style="font-size: 13.67px;">Vulkan</a> <a href="/tags/algorithm/" style="font-size: 13px;">algorithm</a> <a href="/tags/c/" style="font-size: 13px;">c++</a> <a href="/tags/c-STL/" style="font-size: 13px;">c++ STL</a> <a href="/tags/computer-graphics/" style="font-size: 13px;">computer-graphics</a> <a href="/tags/ray-tracing/" style="font-size: 13px;">ray-tracing</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-6/" class="title">Ark VkRenderer Dev Log 6</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T12:25:40.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Computer-Graphics/">Computer Graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-5/" class="title">Ark VkRenderer Dev Log 5</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T09:16:11.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-4/" class="title">Ark VkRenderer Dev Log 4</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T06:15:51.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-3/" class="title">Ark VkRenderer Dev Log 3</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T02:45:22.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/computer-graphics/">computer graphics</a>
+              </p>
+              <p class="item-title">
+                <a href="/Ark-VkRenderer-Dev-Log-2/" class="title">Ark VkRenderer Dev Log 2</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-05T01:03:54.000Z" itemprop="datePublished">2022-07-05</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">Catalogue</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Framebuffers"><span class="toc-number">1.</span> <span class="toc-text">Framebuffers</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Command-buffers"><span class="toc-number">2.</span> <span class="toc-text">Command buffers</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Command-pools"><span class="toc-number">2.1.</span> <span class="toc-text">Command pools</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Draw-our-triangle"><span class="toc-number">3.</span> <span class="toc-text">Draw our triangle</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Ark-VkRenderer-Dev-Log-6" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Ark VkRenderer Dev Log 6
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/Ark-VkRenderer-Dev-Log-6/" class="article-date">
+	  <time datetime="2022-07-05T12:25:40.000Z" itemprop="datePublished">2022-07-05</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/computer-graphics/">computer graphics</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Renderer/" rel="tag">Renderer</a>, <a class="article-tag-link-link" href="/tags/Vulkan/" rel="tag">Vulkan</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/Ark-VkRenderer-Dev-Log-6/#comments" class="article-comment-link">Comments</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="Framebuffers"><a href="#Framebuffers" class="headerlink" title="Framebuffers"></a>Framebuffers</h2><p>First, create another <code>std::vector</code> class member to hold the framebuffers:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;VkFramebuffer&gt; m_swapChainFrameBuffers;</span><br></pre></td></tr></table></figure>
+
+<p>Start by resizing the container to hold all of the framebuffers:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_swapChainFrameBuffers.<span class="built_in">resize</span>(<span class="built_in">ImageCount</span>());</span><br></pre></td></tr></table></figure>
+
+<p>We’ll then iterate through the image views and create framebuffers from them:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; <span class="built_in">ImageCount</span>(); i++)</span><br><span class="line">&#123;</span><br><span class="line">    std::array&lt;VkImageView, 2&gt; attachments = &#123;</span><br><span class="line">        m_swapChainImageViews[i], m_depthImageViews[i]</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    VkExtent2D swapChainExtent = <span class="built_in">GetSwapChainExtent</span>();</span><br><span class="line">    VkFramebufferCreateInfo framebufferInfo = &#123;&#125;;</span><br><span class="line">    framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;</span><br><span class="line">    framebufferInfo.renderPass = m_renderPass;</span><br><span class="line">    framebufferInfo.attachmentCount = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(attachments.</span><br><span class="line">                                                            <span class="built_in">size</span>());</span><br><span class="line">    framebufferInfo.pAttachments = attachments.<span class="built_in">data</span>();</span><br><span class="line">    framebufferInfo.width = swapChainExtent.width;</span><br><span class="line">    framebufferInfo.height = swapChainExtent.height;</span><br><span class="line">    framebufferInfo.layers = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">vkCreateFramebuffer</span>(</span><br><span class="line">        m_device.<span class="built_in">Device</span>(),</span><br><span class="line">        &amp;framebufferInfo,</span><br><span class="line">        <span class="literal">nullptr</span>,</span><br><span class="line">        &amp;m_swapChainFrameBuffers[i]) != VK_SUCCESS)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create framebuffer!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Don’t forget to destroy the framebuffers:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> framebuffer : m_swapChainFrameBuffers)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">vkDestroyFramebuffer</span>(m_device.<span class="built_in">Device</span>(), framebuffer, <span class="literal">nullptr</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Command-buffers"><a href="#Command-buffers" class="headerlink" title="Command buffers"></a>Command buffers</h2><p>Commands in Vulkan, like drawing operations and memory transfers, are not executed directly using function calls. You have to record all of the operations you want to perform in command buffer objects. The advantage of this is that when we are ready to tell the Vulkan what we want to do, all of the commands are submitted together and Vulkan can more efficiently process the commands since all of them are available together. In addition, this allows command recording to happen in multiple threads if so desired.</p>
+<h3 id="Command-pools"><a href="#Command-pools" class="headerlink" title="Command pools"></a>Command pools</h3><p>To use command buffers, we must create a command pool. Command pools manage the memory that is used to store the buffers and command buffers are allocated from them. We use <code>vkCreateCommandPool</code> to create a command pool, first look at its prototype:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VkResult <span class="title">vkCreateCommandPool</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    VkDevice                                    device,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">const</span> VkCommandPoolCreateInfo*              pCreateInfo,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">const</span> VkAllocationCallbacks*                pAllocator,</span></span></span><br><span class="line"><span class="params"><span class="function">    VkCommandPool*                              pCommandPool)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>This function takes in a logical device as its first parameter, so we place this function and <code>m_commandPool</code> in <code>ArkDeivce.hpp</code>:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ArkDevice::CreateCommandPool</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    QueueFamilyIndices queueFamilyIndices = <span class="built_in">FindPhysicalQueueFamilies</span>();</span><br><span class="line"></span><br><span class="line">    VkCommandPoolCreateInfo poolInfo = &#123;&#125;;</span><br><span class="line">    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;</span><br><span class="line">    poolInfo.queueFamilyIndex = queueFamilyIndices.m_graphicsFamily;</span><br><span class="line">    poolInfo.flags =</span><br><span class="line">        VK_COMMAND_POOL_CREATE_TRANSIENT_BIT |</span><br><span class="line">        VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">vkCreateCommandPool</span>(m_device, &amp;poolInfo, <span class="literal">nullptr</span>, &amp;m_commandPool) !=</span><br><span class="line">        VK_SUCCESS)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create command pool!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>You can see that the <code>createXXX</code> pattern is quite similar in Vulkan API.</p>
+<p>In our <code>FirstApp.hpp</code>, implement <code>CreateCommandBuffers()</code>:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FirstApp::CreateCommandBuffers</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    m_commandBuffers.<span class="built_in">resize</span>(m_arkSwapChain.<span class="built_in">ImageCount</span>());</span><br><span class="line">    VkCommandBufferAllocateInfo allocateInfo&#123;&#125;;</span><br><span class="line">    allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;</span><br><span class="line">    allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;</span><br><span class="line">    allocateInfo.commandPool = m_arkDevice.<span class="built_in">GetCommandPool</span>();</span><br><span class="line">    allocateInfo.commandBufferCount = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(m_commandBuffers.<span class="built_in">size</span>());</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">vkAllocateCommandBuffers</span>(m_arkDevice.<span class="built_in">Device</span>(), &amp;allocateInfo, m_commandBuffers.<span class="built_in">data</span>()) != VK_SUCCESS)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to allocate command buffers!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m_commandBuffers.<span class="built_in">size</span>(); ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        VkCommandBufferBeginInfo beginInfo&#123;&#125;;</span><br><span class="line">        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">vkBeginCommandBuffer</span>(m_commandBuffers[i], &amp;beginInfo) != VK_SUCCESS)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to begin recording command buffers!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        VkRenderPassBeginInfo renderPassInfo&#123;&#125;;</span><br><span class="line">        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;</span><br><span class="line">        renderPassInfo.renderPass = m_arkSwapChain.<span class="built_in">GetRenderPass</span>();</span><br><span class="line">        renderPassInfo.framebuffer = m_arkSwapChain.<span class="built_in">GetFrameBuffer</span>(i);</span><br><span class="line">        renderPassInfo.renderArea.offset = &#123; <span class="number">0</span>, <span class="number">0</span> &#125;;</span><br><span class="line">        renderPassInfo.renderArea.extent = m_arkSwapChain.<span class="built_in">GetSwapChainExtent</span>();</span><br><span class="line"></span><br><span class="line">        std::array&lt;VkClearValue, 2&gt; clearValues&#123;&#125;;</span><br><span class="line">        clearValues[<span class="number">0</span>].color = &#123;<span class="number">0.1f</span>, <span class="number">0.1f</span>, <span class="number">0.1f</span>, <span class="number">1.0f</span>&#125;;</span><br><span class="line">        clearValues[<span class="number">1</span>].depthStencil = &#123; <span class="number">1.0f</span>, <span class="number">0</span> &#125;;</span><br><span class="line">        renderPassInfo.clearValueCount = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(clearValues.<span class="built_in">size</span>());</span><br><span class="line">        renderPassInfo.pClearValues = clearValues.<span class="built_in">data</span>();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">vkCmdBeginRenderPass</span>(m_commandBuffers[i], &amp;renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);</span><br><span class="line"></span><br><span class="line">        m_arkPipeline-&gt;<span class="built_in">Bind</span>(m_commandBuffers[i]);</span><br><span class="line">        <span class="built_in">vkCmdDraw</span>(m_commandBuffers[i], <span class="number">3</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="built_in">vkCmdEndRenderPass</span>(m_commandBuffers[i]);</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">vkEndCommandBuffer</span>(m_commandBuffers[i]) != VK_SUCCESS)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to record command buffer!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Draw-our-triangle"><a href="#Draw-our-triangle" class="headerlink" title="Draw our triangle"></a>Draw our triangle</h2><p>Now it’s time to present our triangle:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FirstApp::DrawFrame</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> imageIndex;</span><br><span class="line">    <span class="keyword">auto</span> result = m_arkSwapChain.<span class="built_in">AcquireNextImage</span>(&amp;imageIndex);</span><br><span class="line">    <span class="keyword">if</span> (result != VK_SUCCESS &amp;&amp; result != VK_SUBOPTIMAL_KHR)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to acquire swap chain image!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    result = m_arkSwapChain.<span class="built_in">SubmitCommandBuffers</span>(&amp;m_commandBuffers[imageIndex], &amp;imageIndex);</span><br><span class="line">    <span class="keyword">if</span> (result != VK_SUCCESS)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to represent swap chain image!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>SubmitCommandBUffers</code> function:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VkResult <span class="title">ArkSwapChain::SubmitCommandBuffers</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">const</span> VkCommandBuffer* buffers, <span class="keyword">uint32_t</span>* imageIndex)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_imagesInFlight[*imageIndex] != VK_NULL_HANDLE)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">vkWaitForFences</span>(m_device.<span class="built_in">Device</span>(), <span class="number">1</span>,</span><br><span class="line">                        &amp;m_imagesInFlight[*imageIndex], VK_TRUE,</span><br><span class="line">                        UINT64_MAX);</span><br><span class="line">    &#125;</span><br><span class="line">    m_imagesInFlight[*imageIndex] = m_inFlightFences[m_currentFrame];</span><br><span class="line">    <span class="comment">// Queue submission and synchronization</span></span><br><span class="line">    VkSubmitInfo submitInfo = &#123;&#125;;</span><br><span class="line">    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;</span><br><span class="line"></span><br><span class="line">    VkSemaphore waitSemaphores[] = &#123;</span><br><span class="line">        m_imageAvailableSemaphores[m_currentFrame]</span><br><span class="line">    &#125;;</span><br><span class="line">    VkPipelineStageFlags waitStages[] = &#123;</span><br><span class="line">        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT</span><br><span class="line">    &#125;;</span><br><span class="line">    submitInfo.waitSemaphoreCount = <span class="number">1</span>;</span><br><span class="line">    submitInfo.pWaitSemaphores = waitSemaphores;</span><br><span class="line">    submitInfo.pWaitDstStageMask = waitStages;</span><br><span class="line"></span><br><span class="line">    submitInfo.commandBufferCount = <span class="number">1</span>;</span><br><span class="line">    submitInfo.pCommandBuffers = buffers;</span><br><span class="line"></span><br><span class="line">    VkSemaphore signalSemaphores[] = &#123;</span><br><span class="line">        m_renderFinishedSemaphores[m_currentFrame]</span><br><span class="line">    &#125;;</span><br><span class="line">    submitInfo.signalSemaphoreCount = <span class="number">1</span>;</span><br><span class="line">    submitInfo.pSignalSemaphores = signalSemaphores;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vkResetFences</span>(m_device.<span class="built_in">Device</span>(), <span class="number">1</span>, &amp;m_inFlightFences[m_currentFrame]);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">vkQueueSubmit</span>(m_device.<span class="built_in">GraphicsQueue</span>(), <span class="number">1</span>, &amp;submitInfo,</span><br><span class="line">                      m_inFlightFences[m_currentFrame]) !=</span><br><span class="line">        VK_SUCCESS)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to submit draw command buffer!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    VkPresentInfoKHR presentInfo = &#123;&#125;;</span><br><span class="line">    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;</span><br><span class="line"></span><br><span class="line">    presentInfo.waitSemaphoreCount = <span class="number">1</span>;</span><br><span class="line">    presentInfo.pWaitSemaphores = signalSemaphores;</span><br><span class="line"></span><br><span class="line">    VkSwapchainKHR swapChains[] = &#123;m_swapChain&#125;;</span><br><span class="line">    presentInfo.swapchainCount = <span class="number">1</span>;</span><br><span class="line">    presentInfo.pSwapchains = swapChains;</span><br><span class="line"></span><br><span class="line">    presentInfo.pImageIndices = imageIndex;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> result = <span class="built_in">vkQueuePresentKHR</span>(m_device.<span class="built_in">PresentQueue</span>(), &amp;presentInfo);</span><br><span class="line"></span><br><span class="line">    m_currentFrame = (m_currentFrame + <span class="number">1</span>) % MAX_FRAMES_IN_FLIGHT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The synchronization in Vulkan is a little complicated, we will discuss it in a separate post.</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>Link：</strong>
+      <a href="https://proton991.github.io/Ark-VkRenderer-Dev-Log-6/" title="Ark VkRenderer Dev Log 6" target="_blank" rel="external">https://proton991.github.io/Ark-VkRenderer-Dev-Log-6/</a>
+    </li>
+    
+<!--     <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li> -->
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/proton991" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/minions.jpeg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/proton991" target="_blank"><span class="text-dark">Cui Xinyu</span><small class="ml-1x">Farmer</small></a></h3>
+        <div>He is lazy...</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/Ark-VkRenderer-Dev-Log-5/" title="Ark VkRenderer Dev Log 5"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="Catalogue" role="button">
+        <span>[&nbsp;</span><span>Catalogue</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/proton991" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>

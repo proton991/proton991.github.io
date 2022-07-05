@@ -17,20 +17,22 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>Hello World | Proton&#39;s Blog</title>
-  <meta name="description" content="My first hexo blog.Keep doing and do it well.">
+  <title>Ark VkRenderer Dev Log 2 | Proton&#39;s Blog</title>
+  <meta name="description" content="Logical device and queuesAfter selecting a physical device to use we need to set up a logical device to interface with it. The logical device creation process is similar to the instance creation proce">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://proton991.github.io/hello-world/index.html">
+<meta property="og:title" content="Ark VkRenderer Dev Log 2">
+<meta property="og:url" content="https://proton991.github.io/Ark-VkRenderer-Dev-Log-2/index.html">
 <meta property="og:site_name" content="Cxy&#39;s Blog">
-<meta property="og:description" content="My first hexo blog.Keep doing and do it well.">
+<meta property="og:description" content="Logical device and queuesAfter selecting a physical device to use we need to set up a logical device to interface with it. The logical device creation process is similar to the instance creation proce">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-06-17T03:00:36.044Z">
-<meta property="article:modified_time" content="2022-06-17T03:00:36.044Z">
+<meta property="article:published_time" content="2022-07-05T01:03:54.000Z">
+<meta property="article:modified_time" content="2022-07-05T02:27:19.744Z">
 <meta property="article:author" content="Cui Xinyu">
+<meta property="article:tag" content="Renderer">
+<meta property="article:tag" content="Vulkan">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="https://proton991.github.io/hello-world/index.html">
+  <link rel="canonical" href="https://proton991.github.io/Ark-VkRenderer-Dev-Log-2/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Cxy&#39;s Blog" type="application/atom+xml">
   
@@ -41,8 +43,8 @@
 <link rel="stylesheet" href="/css/style.css">
 
   
+    <link href="//cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" rel="stylesheet">
   
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css">
   
   
   
@@ -321,16 +323,25 @@
 
   
   
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">Catalogue</h3>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Logical-device-and-queues"><span class="toc-number">1.</span> <span class="toc-text">Logical device and queues</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Window-surface-and-presentation-queue"><span class="toc-number">1.1.</span> <span class="toc-text">Window surface and presentation queue</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
 <main class="main" role="main">
   <div class="content">
-  <article id="post-hello-world" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-Ark-VkRenderer-Dev-Log-2" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      Hello World
+      Ark VkRenderer Dev Log 2
     </h1>
   
 
@@ -338,27 +349,60 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/hello-world/" class="article-date">
-	  <time datetime="2022-06-17T03:00:36.044Z" itemprop="datePublished">2022-06-17</time>
+	<a href="/Ark-VkRenderer-Dev-Log-2/" class="article-date">
+	  <time datetime="2022-07-05T01:03:54.000Z" itemprop="datePublished">2022-07-05</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/Talk/">Talk</a>
+    <a class="article-category-link" href="/categories/computer-graphics/">computer graphics</a>
   </span>
 
         
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Renderer/" rel="tag">Renderer</a>, <a class="article-tag-link-link" href="/tags/Vulkan/" rel="tag">Vulkan</a>
+  </span>
+
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/hello-world/#comments" class="article-comment-link">Comments</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/Ark-VkRenderer-Dev-Log-2/#comments" class="article-comment-link">Comments</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <h1 id="My-first-hexo-blog"><a href="#My-first-hexo-blog" class="headerlink" title="My first hexo blog."></a>My first hexo blog.</h1><p>Keep doing and do it well.</p>
+        <h1 id="Logical-device-and-queues"><a href="#Logical-device-and-queues" class="headerlink" title="Logical device and queues"></a>Logical device and queues</h1><p>After selecting a physical device to use we need to set up a <em>logical device</em> to interface with it. The logical device creation process is similar to the instance creation process and describes the features we want to use. We also need to specify which queues to create now that we’ve queried which queue families are available. </p>
+<p>The creation process involves specifying a bunch of details in structs. The first one is <code>VkDeviceQueueCreateInfo</code>. This structure describes the number of queues we want for a single queue family, The <strong>QueueFamily</strong> is found by <code>FindQueueFamilies</code>, which is shown in last dev log.  Then using a while loop to set each <code>VkDeviceQueueCreateInfo</code> separately.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> queuePriority = <span class="number">1.0f</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">uint32_t</span> queueFamily : uniqueQueueFamilies)</span><br><span class="line">&#123;</span><br><span class="line">    VkDeviceQueueCreateInfo queueCreateInfo = &#123;&#125;;</span><br><span class="line">    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;</span><br><span class="line">    queueCreateInfo.queueFamilyIndex = queueFamily;</span><br><span class="line">    queueCreateInfo.queueCount = <span class="number">1</span>;</span><br><span class="line">    queueCreateInfo.pQueuePriorities = &amp;queuePriority;</span><br><span class="line">    queueCreateInfos.<span class="built_in">push_back</span>(queueCreateInfo);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Next, we specify used device features:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">VkPhysicalDeviceFeatures deviceFeatures = &#123;&#125;;</span><br><span class="line">deviceFeatures.samplerAnisotropy = VK_TRUE;</span><br></pre></td></tr></table></figure>
+
+<p>Here enabling <code>samplerAnisotropy</code> means enhancing the image quality of textures on surfaces through anisotropic filtering (abbreviated AF).</p>
+<p>Finally, we can create our logical device, create a <code>VkDeviceCreateInfo</code> struct and fill in data.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">VkDeviceCreateInfo createInfo = &#123;&#125;;</span><br><span class="line">createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;</span><br><span class="line"></span><br><span class="line">createInfo.queueCreateInfoCount = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(queueCreateInfos</span><br><span class="line">                                                        .<span class="built_in">size</span>());</span><br><span class="line">createInfo.pQueueCreateInfos = queueCreateInfos.<span class="built_in">data</span>();</span><br><span class="line"></span><br><span class="line">createInfo.pEnabledFeatures = &amp;deviceFeatures;</span><br><span class="line">createInfo.enabledExtensionCount = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(</span><br><span class="line">    deviceExtensions.<span class="built_in">size</span>());</span><br><span class="line">createInfo.ppEnabledExtensionNames = deviceExtensions.<span class="built_in">data</span>();</span><br></pre></td></tr></table></figure>
+
+<p>The last step to specify validation layers in already deprecated, but we still add this for compatibility reasons:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// might not really be necessary anymore because device specific validation layers</span></span><br><span class="line"><span class="comment">// have been deprecated</span></span><br><span class="line"><span class="keyword">if</span> (enableValidationLayers)</span><br><span class="line">&#123;</span><br><span class="line">    createInfo.enabledLayerCount = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(</span><br><span class="line">        validationLayers.<span class="built_in">size</span>());</span><br><span class="line">    createInfo.ppEnabledLayerNames = validationLayers.<span class="built_in">data</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    createInfo.enabledLayerCount = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Now we are ready to create our logical device:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">vkCreateDevice</span>(m_physicalDevice, &amp;createInfo, <span class="literal">nullptr</span>, &amp;m_device) !=</span><br><span class="line">    VK_SUCCESS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create logical device!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>There’s one more thing to do. The queues are automatically created along with the logical device, but we don’t have a handle to interface with them yet. Add a a class member to store a handle to the graphics queue:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkGetDeviceQueue</span>(m_device, indices.m_graphicsFamily, <span class="number">0</span>, &amp;m_graphicsQueue);</span><br></pre></td></tr></table></figure>
+
+<p>Remember to destroy the device before we exit the program,</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkDestroyDevice</span>(device, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Window-surface-and-presentation-queue"><a href="#Window-surface-and-presentation-queue" class="headerlink" title="Window surface and presentation queue"></a>Window surface and presentation queue</h2><p> To establish the connection between Vulkan and the window system to present results to the screen, we need to use the WSI (Window System Integration) extensions.  Here we will use <code>VkSurfaceKHR</code>. We create this surface in our <code>WindowSystem</code>:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">WindowSystem::CreateWindowSurface</span><span class="params">(VkInstance instance,</span></span></span><br><span class="line"><span class="params"><span class="function">                                       VkSurfaceKHR* surface)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">glfwCreateWindowSurface</span>(instance, m_window, <span class="literal">nullptr</span>, surface) !=</span><br><span class="line">        VK_SUCCESS)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create window surface!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Next, we need to query for presentation support, modify <code>IsDeviceSuitable</code> to check both graphics queue and presentation queue support, modify <code>FindQueueFamilies</code> to get presentation support using <code>vkGetPhysicalDeviceSurfaceSupportKHR</code>.</p>
 
       
     </div>
@@ -368,7 +412,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>Link：</strong>
-      <a href="https://proton991.github.io/hello-world/" title="Hello World" target="_blank" rel="external">https://proton991.github.io/hello-world/</a>
+      <a href="https://proton991.github.io/Ark-VkRenderer-Dev-Log-2/" title="Ark VkRenderer Dev Log 2" target="_blank" rel="external">https://proton991.github.io/Ark-VkRenderer-Dev-Log-2/</a>
     </li>
     
 <!--     <li class="post-copyright-license">
@@ -399,12 +443,6 @@
   </article>
   
     
-  <section id="comments">
-  	
-
-    
-  </section>
-
 
   
 </div>
@@ -415,14 +453,23 @@
   <ul class="pager pull-left">
     
     <li class="prev">
-      <a href="/ArkRenderer-Project/" title="ArkRenderer Project"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+      <a href="/Ark-VkRenderer-Dev-Log-3/" title="Ark VkRenderer Dev Log 3"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
     </li>
     
     
     <li class="next">
-      <a href="/LearnCpp-day0/" title="LearnCpp-day0"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/Ark-VkRenderer-Dev-Log-1/" title="Ark VkRenderer Dev Log 1"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="Catalogue" role="button">
+        <span>[&nbsp;</span><span>Catalogue</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
     
   </ul>
   
@@ -494,28 +541,6 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
    
-
-
-
-
-   
-    
-<script src="//cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js"></script>
-<script>
-var gitment = new Gitment({
-  // id默认为当前页面url，如果url后带参数或锚点，gitment要重新初始化
-  // https://github.com/imsun/gitment/issues/55
-  // 解决方案：id:window.location.pathname,或者将id设置为当前页面标题
-  id: 'Hello World', 
-  owner: '', // 可以是你的GitHub用户名，也可以是github id
-  repo: '',
-  oauth: {
-    client_id: '',
-    client_secret: '',
-  }
-})
-gitment.render('comments')
-</script>
 
 
 
