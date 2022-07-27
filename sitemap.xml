@@ -4,7 +4,7 @@
   <url>
     <loc>https://proton991.github.io/Ark-VkRenderer-Dev-Log-6/</loc>
     
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -13,7 +13,7 @@
   <url>
     <loc>https://proton991.github.io/Ark-VkRenderer-Dev-Log-5/</loc>
     
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -22,7 +22,7 @@
   <url>
     <loc>https://proton991.github.io/Ark-VkRenderer-Dev-Log-4/</loc>
     
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-26</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -31,7 +31,7 @@
   <url>
     <loc>https://proton991.github.io/Ark-VkRenderer-Dev-Log-3/</loc>
     
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-25</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -40,7 +40,7 @@
   <url>
     <loc>https://proton991.github.io/Ark-VkRenderer-Dev-Log-2/</loc>
     
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-14</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -49,7 +49,7 @@
   <url>
     <loc>https://proton991.github.io/Ark-VkRenderer-Dev-Log-1/</loc>
     
-    <lastmod>2022-07-04</lastmod>
+    <lastmod>2022-07-14</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -58,7 +58,7 @@
   <url>
     <loc>https://proton991.github.io/Ark-VkRender-Dev-Log-0/</loc>
     
-    <lastmod>2022-07-04</lastmod>
+    <lastmod>2022-07-14</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -137,7 +137,7 @@
   </url>
   
   <url>
-    <loc>https://proton991.github.io/repository/index.html</loc>
+    <loc>https://proton991.github.io/tags/index.html</loc>
     
     <lastmod>2022-06-17</lastmod>
     
@@ -146,7 +146,7 @@
   </url>
   
   <url>
-    <loc>https://proton991.github.io/tags/index.html</loc>
+    <loc>https://proton991.github.io/repository/index.html</loc>
     
     <lastmod>2022-06-17</lastmod>
     
@@ -157,7 +157,7 @@
 
   <url>
     <loc>https://proton991.github.io/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -165,56 +165,56 @@
   
   <url>
     <loc>https://proton991.github.io/tags/Renderer/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/tags/Vulkan/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/tags/OpenGL/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/tags/c/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/tags/algorithm/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/tags/c-STL/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/tags/ray-tracing/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/tags/computer-graphics/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -223,28 +223,28 @@
   
   <url>
     <loc>https://proton991.github.io/categories/computer-graphics/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/categories/Computer-Graphics/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/categories/Cpp/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://proton991.github.io/categories/Talk/</loc>
-    <lastmod>2022-07-05</lastmod>
+    <lastmod>2022-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
