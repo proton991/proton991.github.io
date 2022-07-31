@@ -17,16 +17,25 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>Tag: OpenGL | Proton&#39;s Blog</title>
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Cxy&#39;s Blog">
-<meta property="og:url" content="https://proton991.github.io/tags/OpenGL/index.html">
+  <title>Understanding Transformation Matrix | Proton&#39;s Blog</title>
+  <meta name="description" content="Basics: Vector &amp; Pointvector: a direction in 3D space. point: a position in 3D space. Normal: A normal is the technical term used in Computer Graphics (and Geometry) to describe the orientation of">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding Transformation Matrix">
+<meta property="og:url" content="https://proton991.github.io/Understanding-Transformation-Matrix/index.html">
 <meta property="og:site_name" content="Cxy&#39;s Blog">
+<meta property="og:description" content="Basics: Vector &amp; Pointvector: a direction in 3D space. point: a position in 3D space. Normal: A normal is the technical term used in Computer Graphics (and Geometry) to describe the orientation of">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://proton991.github.io/Understanding-Transformation-Matrix/vk_gl_coord.png">
+<meta property="article:published_time" content="2022-07-30T13:19:10.000Z">
+<meta property="article:modified_time" content="2022-07-31T13:33:23.186Z">
 <meta property="article:author" content="Cui Xinyu">
+<meta property="article:tag" content="Vulkan">
+<meta property="article:tag" content="OpenGL">
+<meta property="article:tag" content="Transformation">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://proton991.github.io/Understanding-Transformation-Matrix/vk_gl_coord.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="https://proton991.github.io/tags/OpenGL/index.html">
+  <link rel="canonical" href="https://proton991.github.io/Understanding-Transformation-Matrix/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Cxy&#39;s Blog" type="application/atom+xml">
   
@@ -36,6 +45,8 @@
   
 <link rel="stylesheet" href="/css/style.css">
 
+  
+    <link href="//cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" rel="stylesheet">
   
   
   
@@ -314,150 +325,159 @@
 </aside>
 
   
-  <main class="main" role="main">
-  <article class="content article article-tags post-type-list" itemscope="">
-    <header class="article-header">
-      <h1 itemprop="name" class="hidden-xs">Tag: OpenGL</h1>
-      <p class="text-muted hidden-xs">Total 4 articles</p>
-      <nav role="navigation" id="nav-main" class="okayNav">
-        <ul>
-          <li><a href="/tags">All</a></li>
-          
-          <li><a href="/tags/Renderer/">Renderer</a></li>
-          
-          <li><a href="/tags/Vulkan/">Vulkan</a></li>
-          
-          <li><a href="/tags/OpenGL/">OpenGL</a></li>
-          
-          <li><a href="/tags/c/">c++</a></li>
-          
-          <li><a href="/tags/algorithm/">algorithm</a></li>
-          
-          <li><a href="/tags/c-STL/">c++ STL</a></li>
-          
-          <li><a href="/tags/ray-tracing/">ray-tracing</a></li>
-          
-          <li><a href="/tags/computer-graphics/">computer-graphics</a></li>
-          
-          <li><a href="/tags/Transformation/">Transformation</a></li>
-          
-        </ul>
-      </nav>
-    </header>
-    <!-- /header -->
-    <div class="article-body">
-      <div class="row">
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">Catalogue</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Basics-Vector-amp-Point"><span class="toc-number">1.</span> <span class="toc-text">Basics: Vector &amp; Point</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Coordinate-System"><span class="toc-number">2.</span> <span class="toc-text">Coordinate System</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Transform-Normal"><span class="toc-number">3.</span> <span class="toc-text">Transform Normal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Model-matrix-View-matrix-and-Projection-matrix"><span class="toc-number">4.</span> <span class="toc-text">Model matrix, View matrix and Projection matrix</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Understanding-Transformation-Matrix" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
         
-<div class="col-md-6">
-    
-<article class="panel panel-default hover-shadow hover-grow" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="panel-body">
-     <div class="article-meta">
-       <time datetime="2022-07-30T13:19:10.000Z" itemprop="datePublished">2022-07-30</time>
-     </div>
-     <h3 class="article-title" itemprop="name">
-       <a class="article-link" href="/Understanding-Transformation-Matrix/">Understanding Transformation Matrix</a>
-     </h3>
-   </div>
-   
-   <div class="panel-footer">
-     
-      <a href="/tags/Vulkan/" class="label label-default mb">Vulkan</a>
-     
-      <a href="/tags/OpenGL/" class="label label-default mb">OpenGL</a>
-     
-      <a href="/tags/Transformation/" class="label label-default mb">Transformation</a>
-     
-     
-   </div>
-   
-</article>
+  
+    <h1 class="article-title" itemprop="name">
+      Understanding Transformation Matrix
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/Understanding-Transformation-Matrix/" class="article-date">
+	  <time datetime="2022-07-30T13:19:10.000Z" itemprop="datePublished">2022-07-30</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/computer-graphics/">computer graphics</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/OpenGL/" rel="tag">OpenGL</a>, <a class="article-tag-link-link" href="/tags/Transformation/" rel="tag">Transformation</a>, <a class="article-tag-link-link" href="/tags/Vulkan/" rel="tag">Vulkan</a>
+  </span>
 
 
-</div>
+        
 
-<div class="col-md-6">
-    
-<article class="panel panel-default hover-shadow hover-grow" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="panel-body">
-     <div class="article-meta">
-       <time datetime="2022-06-22T10:38:31.000Z" itemprop="datePublished">2022-06-22</time>
-     </div>
-     <h3 class="article-title" itemprop="name">
-       <a class="article-link" href="/ArkRenderer-Dev-Log-1/">ArkRenderer Dev Log 1</a>
-     </h3>
-   </div>
-   
-   <div class="panel-footer">
-     
-      <a href="/tags/Renderer/" class="label label-default mb">Renderer</a>
-     
-      <a href="/tags/OpenGL/" class="label label-default mb">OpenGL</a>
-     
-     
-   </div>
-   
-</article>
-
-
-</div>
-
-<div class="col-md-6">
-    
-<article class="panel panel-default hover-shadow hover-grow" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="panel-body">
-     <div class="article-meta">
-       <time datetime="2022-06-17T09:32:03.000Z" itemprop="datePublished">2022-06-17</time>
-     </div>
-     <h3 class="article-title" itemprop="name">
-       <a class="article-link" href="/ArkRenderer-Dev-Log-0/">ArkRenderer Dev Log 0</a>
-     </h3>
-   </div>
-   
-   <div class="panel-footer">
-     
-      <a href="/tags/Renderer/" class="label label-default mb">Renderer</a>
-     
-      <a href="/tags/OpenGL/" class="label label-default mb">OpenGL</a>
-     
-     
-   </div>
-   
-</article>
-
-
-</div>
-
-<div class="col-md-6">
-    
-<article class="panel panel-default hover-shadow hover-grow" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="panel-body">
-     <div class="article-meta">
-       <time datetime="2022-06-17T05:51:32.000Z" itemprop="datePublished">2022-06-17</time>
-     </div>
-     <h3 class="article-title" itemprop="name">
-       <a class="article-link" href="/ArkRenderer-Project/">ArkRenderer Project</a>
-     </h3>
-   </div>
-   
-   <div class="panel-footer">
-     
-      <a href="/tags/Renderer/" class="label label-default mb">Renderer</a>
-     
-      <a href="/tags/OpenGL/" class="label label-default mb">OpenGL</a>
-     
-     
-   </div>
-   
-</article>
-
-
-</div>
-
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/Understanding-Transformation-Matrix/#comments" class="article-comment-link">Comments</a></span>
+        
       </div>
     </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="Basics-Vector-amp-Point"><a href="#Basics-Vector-amp-Point" class="headerlink" title="Basics: Vector &amp; Point"></a>Basics: Vector &amp; Point</h2><p><strong>vector</strong>: a direction in 3D space.</p>
+<p><strong>point</strong>: a position in 3D space.</p>
+<p><strong>Normal</strong>: A normal is the technical term used in Computer Graphics (and Geometry) to describe the orientation of a surface of a geometric object at a point on that surface. Technically, the <strong>surface normal</strong> to a surface at point <strong>P</strong>, can be seen as the vector perpendicular to a plane tangent to the surface at <strong>P</strong>. Normal plays an important role in shading where they are used to compute the brightness of objects.</p>
+<h2 id="Coordinate-System"><a href="#Coordinate-System" class="headerlink" title="Coordinate System"></a>Coordinate System</h2><p>Vulkan introduces a number of interesting changes over OpenGL with some of the key performance and flexibility changes being mentioned often on the internet. A more subtle yet equally important change to be understood is the that of the coordinate system. </p>
+<p><img src="/Understanding-Transformation-Matrix/vk_gl_coord.png" alt="image-20220731211230272"></p>
+<p>There are <strong>2</strong> changes:</p>
+<ol>
+<li>y axis now points down the screen. When using <code>glm::perspective()</code> to calculate the projection matrix, remember to flip the y coordinate:</li>
+</ol>
+   <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubo.proj = glm::<span class="built_in">perspective</span>(glm::<span class="built_in">radians</span>(<span class="number">45.0f</span>), swapChainExtent.width / (<span class="keyword">float</span>) swapChainExtent.height, <span class="number">0.1f</span>, <span class="number">10.0f</span>);</span><br><span class="line">ubo.proj[<span class="number">1</span>][<span class="number">1</span>] *= <span class="number">-1</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>For the depth range: Vulkan has a [0, 1] range for the Z axis in NDC space where OpenGL has [-1, 1] range (by default). There are a couple ways to handle this. One simple way is to define a macro when using <code>glm</code> library:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GLM_FORECE_DEPTH_ZERO_TO_ONE</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="Transform-Normal"><a href="#Transform-Normal" class="headerlink" title="Transform Normal"></a>Transform Normal</h2><p>Refer to <a target="_blank" rel="noopener" href="https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/transforming-normals">Scratchpixel</a>.</p>
+<h2 id="Model-matrix-View-matrix-and-Projection-matrix"><a href="#Model-matrix-View-matrix-and-Projection-matrix" class="headerlink" title="Model matrix, View matrix and Projection matrix"></a>Model matrix, View matrix and Projection matrix</h2><p><strong>Calculation</strong>: P * V * M</p>
+<p><code>gl_Position = ubo.projectionViewMatrix * push.modelMatrix * vec4(position, 1.0);</code></p>
+<p>Refer to</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://learnopengl.com/Getting-started/Coordinate-Systems">Learnopengl</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.3dgep.com/understanding-the-view-matrix/">https://www.3dgep.com/understanding-the-view-matrix/</a></li>
+</ol>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>Link：</strong>
+      <a href="https://proton991.github.io/Understanding-Transformation-Matrix/" title="Understanding Transformation Matrix" target="_blank" rel="external">https://proton991.github.io/Understanding-Transformation-Matrix/</a>
+    </li>
+    
+<!--     <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li> -->
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/proton991" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/minions.jpeg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/proton991" target="_blank"><span class="text-dark">Cui Xinyu</span><small class="ml-1x">Farmer</small></a></h3>
+        <div>He is lazy...</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
   </article>
-   
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/Ark-VkRenderer-Dev-Log-6/" title="Ark VkRenderer Dev Log 6"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="Catalogue" role="button">
+        <span>[&nbsp;</span><span>Catalogue</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -510,6 +530,10 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 
+
+
+
+   
 
 
 
